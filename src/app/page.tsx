@@ -230,7 +230,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#f5f5f7] text-[#1d1d1f] font-sans selection:bg-[#0071e3] selection:text-white relative">
       {/* Header */}
       <header className="bg-white sticky top-0 w-full z-50 border-b border-[#1d1d1f]/10">
-        <div className="max-w-6xl mx-auto px-6 h-12 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 md:px-6 h-12 flex items-center justify-between">
           <div className="flex items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/iconwebb.png" alt="StorePublish" className="w-6 h-6 object-contain" />
@@ -285,7 +285,7 @@ export default function Home() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden absolute top-12 left-0 w-full bg-white/95 backdrop-blur-md border-b border-[#1d1d1f]/10 shadow-lg py-4 px-6 flex flex-col gap-4">
+          <div className="md:hidden absolute top-12 left-0 w-full bg-white/95 backdrop-blur-md border-b border-[#1d1d1f]/10 shadow-lg py-4 px-4 flex flex-col gap-4">
             <a href="#packages" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-[#1d1d1f]">{t.nav_pricing}</a>
             <a href="#calculator" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-[#1d1d1f]">{t.nav_calc}</a>
             <a href="#services" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-[#1d1d1f]">{t.nav_services}</a>
@@ -303,7 +303,7 @@ export default function Home() {
           style={{ backgroundImage: `url('/apple-announces-rcs-support-for-ios-what-does-this-mean-for_dk9e.2496.webp')` }}
         />
         
-        <div className="w-full max-w-4xl mx-auto px-6 text-center relative z-10 flex flex-col items-center">
+        <div className="w-full max-w-4xl mx-auto px-4 md:px-6 text-center relative z-10 flex flex-col items-center">
           {/* Glassmorphism Container to separate text from busy background */}
           <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-10 md:p-14 rounded-[3rem] shadow-2xl w-full max-w-2xl mx-auto">
             
@@ -353,8 +353,8 @@ export default function Home() {
       </section>
 
       {/* Pricing Packages */}
-      <section id="packages" className="max-w-6xl mx-auto px-6 py-20 scroll-mt-12 relative z-10">
-        <div className="max-w-6xl mx-auto px-6">
+      <section id="packages" className="py-20 scroll-mt-12 relative z-10">
+        <div className="max-w-6xl mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
             <h2 
               className="text-4xl md:text-5xl font-semibold tracking-tight bg-gradient-to-r from-[#022640] to-[#5786AB] bg-clip-text text-transparent inline-block pb-1 mb-4"
@@ -462,8 +462,8 @@ export default function Home() {
       </section>
 
       {/* Calculator Section */}
-      <section id="calculator" className="max-w-6xl mx-auto px-6 mb-20 relative z-10 border-t border-[#d2d2d7]/50 pt-20">
-        <div className="max-w-6xl mx-auto px-6">
+      <section id="calculator" className="mb-20 relative z-10 border-t border-[#d2d2d7]/50 pt-20">
+        <div className="max-w-6xl mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
             <h2 
               className="text-4xl md:text-5xl font-semibold tracking-tight bg-gradient-to-r from-[#022640] to-[#5786AB] bg-clip-text text-transparent inline-block pb-1 mb-4"
@@ -646,7 +646,7 @@ export default function Home() {
 
       {/* Detailed Services Table */}
       <section id="services" className="py-20 border-t border-[#d2d2d7]/50">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
             <h2 
               className="text-4xl md:text-5xl font-semibold tracking-tight bg-gradient-to-r from-[#022640] to-[#5786AB] bg-clip-text text-transparent inline-block pb-1 mb-4"
@@ -719,7 +719,7 @@ export default function Home() {
 
       {/* Extra Costs & Notes */}
       <section className="py-20 border-t border-[#d2d2d7]/50 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-[#f5f5f7] rounded-[24px] p-8 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
               <h3 
@@ -790,7 +790,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer id="contact" className="py-16 bg-white text-[#1d1d1f] border-t border-[#d2d2d7]/50">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
             <div>
               <h2 className="text-3xl font-semibold tracking-tight mb-4 bg-gradient-to-r from-[#022640] to-[#5786AB] bg-clip-text text-transparent inline-block">StorePublish.</h2>
