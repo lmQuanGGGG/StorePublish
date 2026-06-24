@@ -5,24 +5,25 @@ export const translations = {
     nav_calc: "Tính phí",
     nav_services: "Dịch vụ chi tiết",
     nav_create_quote: "Tạo báo giá",
+    nav_about: "Về tôi",
     nav_contact: "Liên hệ",
 
     // Hero
-    hero_title_1: "Đưa app lên Store.",
-    hero_title_2: "Nhẹ nhàng. Chuyên nghiệp.",
+    hero_title_1: "Đưa app lên Store",
+    hero_title_2: "Nhẹ nhàng. Chuyên nghiệp",
     hero_desc: "Giải pháp trọn gói từ build file, xử lý cấu hình đến gỡ reject. Để bạn tập trung vào những dòng code tuyệt vời.",
     hero_btn_pricing: "Xem bảng giá",
     hero_btn_calc: "Tự tính chi phí",
 
     // Pricing
-    pricing_title: "Chọn cấu hình phù hợp.",
-    pricing_desc: "Chi phí rõ ràng, không phát sinh.",
+    pricing_title: "Chọn gói phát hành phù hợp",
+    pricing_subtitle: "Chi phí rõ ràng, không phát sinh",
     price_popular: "Phổ biến",
     btn_select: "Chọn",
     
     // Calculator
-    calc_title: "Tính phí theo yêu cầu.",
-    calc_desc: "Tự động tạo mẫu tin nhắn báo giá gửi khách.",
+    calc_title: "Chốt deal nhanh hơn",
+    calc_desc: "Chọn gói, hệ thống tự tạo báo giá hoàn chỉnh và gửi thẳng vào email của bạn.",
     calc_box_title: "Báo giá Dịch vụ",
     calc_section_1: "Thông tin chung",
     calc_section_1_desc: "Tùy chọn nền tảng & cấu hình App",
@@ -67,24 +68,25 @@ export const translations = {
     nav_calc: "Calculator",
     nav_services: "Detailed Services",
     nav_create_quote: "Create Quote",
+    nav_about: "About Me",
     nav_contact: "Contact",
 
     // Hero
-    hero_title_1: "Publish app to Store.",
-    hero_title_2: "Smooth. Professional.",
+    hero_title_1: "Publish app to Store",
+    hero_title_2: "Smooth. Professional",
     hero_desc: "End-to-end solution from building files, configuring store listings to handling rejections. So you can focus on writing great code.",
     hero_btn_pricing: "View Pricing",
     hero_btn_calc: "Estimate Cost",
 
     // Pricing
-    pricing_title: "Choose the right plan.",
-    pricing_desc: "Transparent pricing, no hidden fees.",
+    pricing_title: "Choose your publishing plan",
+    pricing_desc: "Transparent pricing, no hidden fees",
     price_popular: "Popular",
     btn_select: "Select",
     
     // Calculator
-    calc_title: "Custom Estimate.",
-    calc_desc: "Automatically generate service quotes.",
+    calc_title: "Close deals faster",
+    calc_desc: "Pick your package, get a complete quote — delivered straight to your email.",
     calc_box_title: "Service Quote",
     calc_section_1: "General Information",
     calc_section_1_desc: "Platform & App Configuration Options",
