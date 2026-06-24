@@ -8,6 +8,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://storepublish.com"),
   title: "StorePublish - Dịch vụ Đưa App lên Store (Google Play & App Store)",
   description: "Bảng báo giá dịch vụ đưa ứng dụng lên Google Play & App Store chuyên nghiệp, tiết kiệm. Hỗ trợ từ A-Z, bảo hành rủi ro reject.",
   keywords: ["đưa app lên store", "up app lên google play", "up app lên app store", "StorePublish", "publish app", "dịch vụ up app", "phát hành ứng dụng"],
