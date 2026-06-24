@@ -17,7 +17,7 @@ export const translations = {
 
     // Pricing
     pricing_title: "Chọn gói phát hành phù hợp",
-    pricing_subtitle: "Chi phí rõ ràng, không phát sinh",
+    pricing_desc: "Chi phí rõ ràng, không phát sinh",
     price_popular: "Phổ biến",
     btn_select: "Chọn",
     
