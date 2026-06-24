@@ -233,7 +233,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 h-12 flex items-center justify-between">
           <div className="flex items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/iphoen.png" alt="StorePublish" className="w-6 h-6 object-contain" />
+            <img src="/iconwebb.png" alt="StorePublish" className="w-6 h-6 object-contain" />
             <span className="font-semibold text-xs tracking-tight">StorePublish</span>
           </div>
           
