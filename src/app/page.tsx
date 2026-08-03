@@ -36,7 +36,8 @@ export default function Home() {
     'app-social': { category: 'app', selected: false, price: 40000000, fakePrice: "60.000.000 ₫", name: "App Mạng Xã Hội/Ví Điện Tử", enName: "Social/Wallet App", desc: "Real-time chat, payment gateway, bảo mật cao", enDesc: "Real-time chat, payment gateway, high security" },
     'app-enterprise': { category: 'app', selected: false, price: 30000000, fakePrice: "45.000.000 ₫", name: "App Quản Trị Nội Bộ", enName: "Internal Management App", desc: "Kết nối API nội bộ, quản lý nhân sự/dự án", enDesc: "Internal API integration, HR/project management" },
     'crm-sales': { category: 'crm', selected: false, price: 15000000, fakePrice: "25.000.000 ₫", name: "CRM Quản Lý Bán Hàng", enName: "Sales Management CRM", desc: "Quản lý lead, khách hàng, báo cáo doanh thu", enDesc: "Lead & customer management, revenue reports" },
-    'crm-full': { category: 'crm', selected: false, price: 35000000, fakePrice: "70.000.000 ₫", name: "ERP Mini Đa Nền Tảng", enName: "Multi-platform Mini ERP", desc: "Tích hợp Web + App, quản lý kho/vận chuyển/nhân sự", enDesc: "Web + App integration, inventory/shipping/HR management" }
+    'crm-full': { category: 'crm', selected: false, price: 35000000, fakePrice: "70.000.000 ₫", name: "ERP Mini Đa Nền Tảng", enName: "Multi-platform Mini ERP", desc: "Tích hợp Web + App, quản lý kho/vận chuyển/nhân sự", enDesc: "Web + App integration, inventory/shipping/HR management" },
+    'ai-enterprise': { category: 'ai', selected: false, price: 20000000, fakePrice: "35.000.000 ₫", name: "Tư vấn & Triển khai AI Doanh nghiệp", enName: "Enterprise AI Consulting & Implementation", desc: "Khảo sát nghiệp vụ, xây dựng lộ trình và triển khai AI vào quy trình vận hành", enDesc: "Process assessment, AI roadmap, and implementation for operations" }
   });
 
   const [addons, setAddons] = useState({
@@ -173,7 +174,7 @@ export default function Home() {
     if (activeDevServices.length > 0) {
       text += lang === 'vi' ? `\n[2] DỊCH VỤ LẬP TRÌNH\n` : `\n[2] DEVELOPMENT SERVICES\n`;
       activeDevServices.forEach((s) => {
-        const sName = lang === 'vi' ? s.name : s.name.replace('Lập trình ', 'Dev ').replace('Hệ thống ', 'System ');
+        const sName = lang === 'vi' ? s.name : s.enName;
         text += `- ${sName}: +${formatMoney(s.price)}\n`;
       });
     }
@@ -285,7 +286,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 md:px-6 h-12 flex items-center justify-between">
           <div className="flex items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/iconwebb.png" alt="StorePublish" className="w-6 h-6 object-contain" />
+            <img src="/icon.png?v=sp-logo" alt="StorePublish" className="w-6 h-6 object-contain" />
             <span className="font-semibold text-xs tracking-tight">StorePublish</span>
           </div>
           
@@ -354,7 +355,7 @@ export default function Home() {
         {/* Background specific to Hero - 100% Crisp as requested */}
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-          style={{ backgroundImage: `url('/apple-announces-rcs-support-for-ios-what-does-this-mean-for_dk9e.2496.webp')` }}
+          style={{ backgroundImage: `url('/NENWEB.png')` }}
         />
         
         <div className="w-full max-w-4xl mx-auto px-4 md:px-6 text-center relative z-10 flex flex-col items-center">
@@ -365,9 +366,9 @@ export default function Home() {
               {/* Image with removed background and fade-out mask at the bottom */}
               <div className="p-2 drop-shadow-2xl">
                 <img 
-                  src="/tai-ung-dung-mien-phi-1-transparent-v2.png" 
-                  alt="Tải ứng dụng miễn phí" 
-                  className="h-36 md:h-48 object-contain hover:scale-105 transition-transform duration-700 ease-out drop-shadow-2xl" 
+                  src="/logoweb-transparent.png"
+                  alt="StorePublish"
+                  className="h-52 md:h-64 object-contain hover:scale-105 transition-transform duration-700 ease-out drop-shadow-2xl"
                   style={{ 
                     WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
                     maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)'
@@ -522,7 +523,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-white rounded-[24px] p-8 flex flex-col justify-between shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
               <div>
                 <h3 className="text-[28px] font-semibold tracking-tight text-[#1d1d1f] mb-1">{lang === 'vi' ? 'Website' : 'Web App'}</h3>
@@ -588,6 +589,27 @@ export default function Home() {
                 {t.btn_select}
               </button>
             </div>
+
+            <div className="bg-white rounded-[24px] p-8 flex flex-col justify-between shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+              <div>
+                <h3 className="text-[28px] font-semibold tracking-tight text-[#1d1d1f] mb-1">{lang === 'vi' ? 'Giải pháp AI' : 'AI Solutions'}</h3>
+                <p className="text-[15px] text-[#86868b] font-medium mb-8">{lang === 'vi' ? 'Cho doanh nghiệp & tổ chức' : 'For businesses & organizations'}</p>
+                <div className="flex items-end gap-2 mb-8">
+                  <div className="text-3xl font-semibold text-[#1d1d1f] tracking-tight">{lang === 'vi' ? 'Từ 20.0M' : '$833'}</div>
+                </div>
+                <ul className="space-y-4 mb-8 text-[15px] text-[#1d1d1f]">
+                  <li className="flex items-start gap-3"><Check className="w-5 h-5 text-[#86868b] shrink-0" />{lang === 'vi' ? 'Khảo sát & tư vấn ứng dụng AI' : 'AI use-case assessment'}</li>
+                  <li className="flex items-start gap-3"><Check className="w-5 h-5 text-[#86868b] shrink-0" />{lang === 'vi' ? 'Tự động hóa quy trình vận hành' : 'Operations automation'}</li>
+                  <li className="flex items-start gap-3"><Check className="w-5 h-5 text-[#86868b] shrink-0" />{lang === 'vi' ? 'Tích hợp AI vào hệ thống hiện có' : 'AI integration with existing systems'}</li>
+                </ul>
+              </div>
+              <button
+                onClick={() => { setActiveTab('ai'); document.getElementById("calculator")?.scrollIntoView({ behavior: "smooth" }); }}
+                className="w-full bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] py-3 rounded-full text-[15px] font-medium transition-colors"
+              >
+                {t.btn_select}
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -612,7 +634,8 @@ export default function Home() {
                   { id: 'platform', label: lang === 'vi' ? 'Phát hành App' : 'App Publishing' },
                   { id: 'web', label: lang === 'vi' ? 'Website' : 'Website' },
                   { id: 'app', label: lang === 'vi' ? 'Mobile App' : 'Mobile App' },
-                  { id: 'crm', label: lang === 'vi' ? 'CRM Custom' : 'CRM Custom' }
+                  { id: 'crm', label: lang === 'vi' ? 'CRM Custom' : 'CRM Custom' },
+                  { id: 'ai', label: lang === 'vi' ? 'Giải pháp AI' : 'AI Solutions' }
                 ].map(tab => (
                   <button
                     key={tab.id}
@@ -738,11 +761,11 @@ export default function Home() {
               </div>
               )}
 
-              {activeTab === 'crm' && (
+              {(activeTab === 'crm' || activeTab === 'ai') && (
               <div className="bg-white rounded-[24px] p-8 shadow-[0_4px_24px_rgba(0,0,0,0.04)] mb-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                <h3 className="text-[19px] font-semibold text-[#1d1d1f] mb-6 tracking-tight">{lang === 'vi' ? 'Hệ thống CRM Custom' : 'Custom CRM System'}</h3>
+                <h3 className="text-[19px] font-semibold text-[#1d1d1f] mb-6 tracking-tight">{activeTab === 'ai' ? (lang === 'vi' ? 'Tư vấn & Triển khai AI' : 'AI Consulting & Implementation') : (lang === 'vi' ? 'Hệ thống CRM Custom' : 'Custom CRM System')}</h3>
                 <div className="space-y-4">
-                  {Object.entries(devServices).filter(([_, s]) => s.category === 'crm').map(([key, service]) => (
+                  {Object.entries(devServices).filter(([_, s]) => s.category === activeTab).map(([key, service]) => (
                     <label
                       key={key}
                       className={`flex items-center p-5 rounded-[16px] cursor-pointer transition-all border ${
@@ -1229,6 +1252,13 @@ export default function Home() {
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f]">{lang === 'vi' ? 'ERP Mini Đa Nền Tảng' : 'Multi-platform Mini ERP'}</td>
                     <td className="px-6 py-5 text-[#86868b] leading-relaxed">{lang === 'vi' ? 'Website Admin + Mobile App cho nhân viên: Quản trị xuyên suốt Sales, HR, Kế toán, Kho' : 'Admin Web + Employee App: Integrated Sales, HR, Accounting, Inventory'}</td>
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f] text-right whitespace-nowrap">{lang === 'vi' ? '35.000.000đ – 70.000.000đ' : '$1,458 – $2,916'}</td>
+                  </tr>
+
+                  {/* AI Services */}
+                  <tr className="bg-[#f5f5f7]/20 hover:bg-[#f5f5f7]/50 transition-colors border-t-2 border-[#d2d2d7]/50">
+                    <td className="px-6 py-5 font-semibold text-[#1d1d1f]">{lang === 'vi' ? 'Tư vấn & Triển khai AI cho Doanh nghiệp' : 'Enterprise AI Consulting & Implementation'}</td>
+                    <td className="px-6 py-5 text-[#86868b] leading-relaxed">{lang === 'vi' ? 'Khảo sát nghiệp vụ, xác định bài toán AI ưu tiên, thiết kế lộ trình triển khai, tích hợp chatbot/trợ lý AI và tự động hóa quy trình vào hệ thống hiện có.' : 'Assess operations, prioritize AI use cases, design an implementation roadmap, and integrate AI assistants, chatbots, and workflow automation with existing systems.'}</td>
+                    <td className="px-6 py-5 font-semibold text-[#1d1d1f] text-right whitespace-nowrap">{lang === 'vi' ? '20.000.000đ – 35.000.000đ' : '$833 – $1,458'}</td>
                   </tr>
                 </tbody>
               </table>
