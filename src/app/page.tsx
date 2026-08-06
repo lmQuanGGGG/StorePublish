@@ -1290,11 +1290,6 @@ export default function Home() {
                   <img src="/877E3A04-27CD-4908-8D40-BD43250F7B02_1_105_c.jpeg" alt="Lê Minh Quang" className="w-full h-auto" />
                 </div>
                 <p className="text-[14px] text-[#86868b] mb-4">{lang === 'vi' ? 'TP. Hồ Chí Minh, Việt Nam' : 'Ho Chi Minh City, Vietnam'}</p>
-                <div className="flex flex-col gap-3 items-center lg:items-start">
-                  <a href="mailto:quanglm23@fpt.com" className="flex items-center gap-3 text-[14px] text-[#86868b] hover:text-[#1d1d1f] transition-colors">
-                    <Mail className="w-4 h-4 shrink-0" />quanglm23@fpt.com
-                  </a>
-                </div>
               </div>
             </div>
 
