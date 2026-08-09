@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Smartphone,
   Check,
@@ -19,11 +19,20 @@ import { translations } from "./translations";
 export default function Home() {
   const [lang, setLang] = useState<'vi' | 'en'>('vi');
   const t = translations[lang];
+  const serviceTabsRef = useRef<HTMLDivElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('platform');
-  const [basePrice, setBasePrice] = useState(1200000);
+  const [basePrice, setBasePrice] = useState(1800000);
   const [baseName, setBaseName] = useState("Basic Android");
   const [baseType, setBaseType] = useState("android");
+  const [devAccountIncluded, setDevAccountIncluded] = useState(false);
+  const [devAccount, setDevAccount] = useState({
+    platform: "android",
+    accountType: "individual",
+    hasDuns: "no",
+    hasBusinessWebsite: "no",
+    hasBusinessEmail: "no",
+  });
   const [multiplier, setMultiplier] = useState(1.0);
   const [multiplierMode, setMultiplierMode] = useState<'student'|'freelancer'|'agency'|'custom'>('student');
 
@@ -37,14 +46,21 @@ export default function Home() {
     'app-enterprise': { category: 'app', selected: false, price: 30000000, fakePrice: "45.000.000 ₫", name: "App Quản Trị Nội Bộ", enName: "Internal Management App", desc: "Kết nối API nội bộ, quản lý nhân sự/dự án", enDesc: "Internal API integration, HR/project management" },
     'crm-sales': { category: 'crm', selected: false, price: 15000000, fakePrice: "25.000.000 ₫", name: "CRM Quản Lý Bán Hàng", enName: "Sales Management CRM", desc: "Quản lý lead, khách hàng, báo cáo doanh thu", enDesc: "Lead & customer management, revenue reports" },
     'crm-full': { category: 'crm', selected: false, price: 35000000, fakePrice: "70.000.000 ₫", name: "ERP Mini Đa Nền Tảng", enName: "Multi-platform Mini ERP", desc: "Tích hợp Web + App, quản lý kho/vận chuyển/nhân sự", enDesc: "Web + App integration, inventory/shipping/HR management" },
-    'ai-enterprise': { category: 'ai', selected: false, price: 20000000, fakePrice: "35.000.000 ₫", name: "Tư vấn & Triển khai AI Doanh nghiệp", enName: "Enterprise AI Consulting & Implementation", desc: "Khảo sát nghiệp vụ, xây dựng lộ trình và triển khai AI vào quy trình vận hành", enDesc: "Process assessment, AI roadmap, and implementation for operations" }
+    'ai-enterprise': { category: 'ai', selected: false, price: 20000000, fakePrice: "35.000.000 ₫", name: "Tư vấn & Triển khai AI Doanh nghiệp", enName: "Enterprise AI Consulting & Implementation", desc: "Khảo sát nghiệp vụ, xây dựng lộ trình và triển khai AI vào quy trình vận hành", enDesc: "Process assessment, AI roadmap, and implementation for operations" },
+    'ads-starter': { category: 'ads', selected: false, price: 2490000, fakePrice: "", name: "App Growth & Ads – Starter", enName: "App Growth & Ads – Starter", desc: "Meta Ads hoặc TikTok Ads, tối đa 3 campaign; phù hợp app mới ra mắt", enDesc: "Meta Ads or TikTok Ads, up to 3 campaigns; ideal for new app launches" },
+    'ads-growth': { category: 'ads', selected: false, price: 4490000, fakePrice: "", name: "App Growth & Ads – Growth", enName: "App Growth & Ads – Growth", desc: "Meta Ads + TikTok Ads, retargeting, 6 creative/video ads mỗi tháng", enDesc: "Meta Ads + TikTok Ads, retargeting, and 6 creative/video ads per month" },
+    'ads-scale': { category: 'ads', selected: false, price: 7900000, fakePrice: "", name: "App Growth & Ads – Scale", enName: "App Growth & Ads – Scale", desc: "Chiến lược user acquisition, scale campaign, 10–15 creative/video ads mỗi tháng", enDesc: "User acquisition strategy, campaign scaling, and 10–15 creative/video ads per month" },
+    'ads-setup': { category: 'ads', selected: false, price: 1490000, fakePrice: "", name: "App Growth & Ads – Setup Only", enName: "App Growth & Ads – Setup Only", desc: "Thiết lập Meta Ads, TikTok Ads, tracking và bàn giao cấu hình", enDesc: "Meta Ads, TikTok Ads, tracking setup, and configuration handover" },
+    'ads-growth-quarter': { category: 'ads', selected: false, price: 11900000, fakePrice: "", name: "App Growth & Ads – Growth 3 Tháng", enName: "App Growth & Ads – Growth 3 Months", desc: "Gói Growth 3 tháng, tiết kiệm 1.570.000đ", enDesc: "3-month Growth package, saving $65" },
+    'ads-scale-quarter': { category: 'ads', selected: false, price: 21900000, fakePrice: "", name: "App Growth & Ads – Scale 3 Tháng", enName: "App Growth & Ads – Scale 3 Months", desc: "Gói Scale 3 tháng, tiết kiệm 1.800.000đ", enDesc: "3-month Scale package, saving $75" }
   });
 
   const [addons, setAddons] = useState({
     // Platform
     listing: { categories: ['platform'], selected: false, price: 1500000, fakePrice: "2.000.000 ₫", name: "Tối ưu Store Listing", enName: "Store Listing Optimization" },
     reject: { categories: ['platform'], selected: false, price: 1000000, fakePrice: "1.500.000 ₫", name: "Hỗ trợ gỡ Reject", enName: "App Rejection Support" },
-    androidTester: { categories: ['platform'], selected: false, price: 500000, fakePrice: "600.000 ₫", name: "Cung cấp 20 Tester (14 ngày)", enName: "Provide 20 Testers (14 days)" },
+    androidTester600: { categories: ['platform'], selected: false, price: 600000, fakePrice: "800.000 ₫", name: "Cung cấp 20 Tester (14 ngày) – Gói 600K", enName: "Provide 20 Testers (14 days) – 600K Plan" },
+    androidTester800: { categories: ['platform'], selected: false, price: 800000, fakePrice: "1.000.000 ₫", name: "Cung cấp 20 Tester (14 ngày) – Gói 800K", enName: "Provide 20 Testers (14 days) – 800K Plan" },
     maintenance: { categories: ['platform'], selected: false, price: 1500000, fakePrice: "2.000.000 ₫", name: "Bảo trì 1 tháng", enName: "1-Month Maintenance" },
     // Web & CRM Common
     cloudHosting: { categories: ['web', 'crm'], selected: false, price: 3850000, fakePrice: "5.000.000 ₫", name: "Hạ tầng Cloud Hosting Tốc Độ Cao (1 Năm)", enName: "High-Speed Cloud Hosting (1 Year)", desc: "Băng thông rộng, lưu trữ mã nguồn Website, CRM, tự động backup dữ liệu", enDesc: "Broadband, source code storage for Web/CRM, automated data backups" },
@@ -73,6 +89,53 @@ export default function Home() {
   const [clientEmail, setClientEmail] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+
+  useEffect(() => {
+    const tabs = serviceTabsRef.current;
+    if (!tabs) return;
+
+    let frameId: number;
+    let pausedUntil = 0;
+    let isHovering = false;
+    let previousTime = performance.now();
+    let virtualScroll = tabs.scrollLeft;
+    const getLoopWidth = () => {
+      const firstSet = tabs.querySelector<HTMLElement>('[data-service-tab-set]');
+      const gap = Number.parseFloat(getComputedStyle(tabs).gap) || 0;
+      return firstSet ? firstSet.offsetWidth + gap : 0;
+    };
+    const pause = () => { pausedUntil = Date.now() + 3000; };
+    const pauseOnHover = () => { isHovering = true; };
+    const resumeAfterHover = () => {
+      isHovering = false;
+      previousTime = performance.now();
+      virtualScroll = tabs.scrollLeft;
+    };
+    const scrollTabs = (currentTime: number) => {
+      const elapsed = Math.min(currentTime - previousTime, 100);
+      previousTime = currentTime;
+      if (!isHovering && Date.now() > pausedUntil && tabs.scrollWidth > tabs.clientWidth) {
+        const loopWidth = getLoopWidth();
+        virtualScroll += elapsed * 0.04;
+        if (loopWidth > 0 && virtualScroll >= loopWidth) virtualScroll -= loopWidth;
+        tabs.scrollLeft = virtualScroll;
+      }
+      frameId = requestAnimationFrame(scrollTabs);
+    };
+
+    tabs.addEventListener('pointerdown', pause);
+    tabs.addEventListener('wheel', pause);
+    tabs.addEventListener('mouseenter', pauseOnHover);
+    tabs.addEventListener('mouseleave', resumeAfterHover);
+    frameId = requestAnimationFrame(scrollTabs);
+    return () => {
+      cancelAnimationFrame(frameId);
+      tabs.removeEventListener('pointerdown', pause);
+      tabs.removeEventListener('wheel', pause);
+      tabs.removeEventListener('mouseenter', pauseOnHover);
+      tabs.removeEventListener('mouseleave', resumeAfterHover);
+    };
+  }, [lang]);
 
   const formatMoney = (amount: number) => {
     if (lang === 'en') {
@@ -109,6 +172,12 @@ export default function Home() {
   const toggleAddon = (type: keyof typeof addons) => {
     setAddons((prev) => ({
       ...prev,
+      ...(type === "androidTester600" ? {
+        androidTester800: { ...prev.androidTester800, selected: false },
+      } : {}),
+      ...(type === "androidTester800" ? {
+        androidTester600: { ...prev.androidTester600, selected: false },
+      } : {}),
       [type]: {
         ...prev[type],
         selected: !prev[type].selected,
@@ -122,6 +191,11 @@ export default function Home() {
       const isSelecting = !prev[type].selected;
       
       if (isSelecting) {
+        if (type.startsWith('ads-')) {
+          (Object.keys(next) as Array<keyof typeof next>).filter(key => key.startsWith('ads-')).forEach(key => {
+            next[key] = { ...next[key], selected: false };
+          });
+        }
         if (type === 'web-company' || type === 'web-custom') {
           next['web-landing'] = { ...next['web-landing'], selected: false };
           next['web-ecommerce'] = { ...next['web-ecommerce'], selected: false };
@@ -144,20 +218,31 @@ export default function Home() {
 
   const addonsTotal = Object.entries(addons).reduce(
     (sum, [key, addon]) => {
-      if (key === "androidTester" && baseType === "ios") return sum;
+      if ((key === "androidTester600" || key === "androidTester800") && baseType === "ios") return sum;
       return addon.selected ? sum + addon.price : sum;
     },
     0
   );
 
   const activeAddons = Object.entries(addons)
-    .filter(([key, addon]) => addon.selected && !(key === "androidTester" && baseType === "ios"))
+    .filter(([key, addon]) => addon.selected && !((key === "androidTester600" || key === "androidTester800") && baseType === "ios"))
     .map(([_, addon]) => addon);
 
   const devTotal = Object.values(devServices).reduce((sum, s) => s.selected ? sum + s.price : sum, 0);
   const activeDevServices = Object.values(devServices).filter(s => s.selected);
 
-  const rawTotal = basePrice + addonsTotal + devTotal;
+  const devAccountBasePrice = devAccount.platform === 'android'
+    ? (devAccount.accountType === 'organization' ? 2500000 : 1500000)
+    : devAccount.platform === 'ios'
+      ? (devAccount.accountType === 'organization' ? 3500000 : 2500000)
+      : (devAccount.accountType === 'organization' ? 5500000 : 4000000);
+  const devAccountSupportTotal = devAccount.accountType === 'organization'
+    ? (devAccount.hasDuns === 'no' ? 1500000 : 0)
+      + (devAccount.hasBusinessWebsite === 'no' ? 3000000 : 0)
+      + (devAccount.hasBusinessEmail === 'no' ? 500000 : 0)
+    : 0;
+  const devAccountTotal = devAccountBasePrice + devAccountSupportTotal;
+  const rawTotal = (devAccountIncluded ? devAccountTotal : basePrice) + addonsTotal + devTotal;
   const total = Math.round(rawTotal * multiplier);
 
   const qrUrl = `https://img.vietqr.io/image/tpbank-10387412607-compact2.png?amount=${total / 2}&accountName=LE%20MINH%20QUANG&addInfo=${encodeURIComponent(`Tam ung StorePublish`)}`;
@@ -168,8 +253,33 @@ export default function Home() {
       : `Dear Sir/Madam,\n\nI am sending you the detailed service quote for publishing your application to the Store (StorePublish brand):\n\n`;
     
     text += lang === 'vi' ? `[1] GÓI DỊCH VỤ CHÍNH\n` : `[1] MAIN SERVICE PACKAGE\n`;
-    text += lang === 'vi' ? `- Tên gói: ${baseName}\n` : `- Package name: ${baseName}\n`;
-    text += lang === 'vi' ? `- Chi phí: ${formatMoney(basePrice)}\n` : `- Cost: ${formatMoney(basePrice)}\n`;
+    text += lang === 'vi'
+      ? `- Tên gói: ${devAccountIncluded ? 'Đăng ký tài khoản Dev' : baseName}\n`
+      : `- Package name: ${devAccountIncluded ? 'Developer Account Registration' : baseName}\n`;
+    text += lang === 'vi'
+      ? `- Chi phí: ${formatMoney(devAccountIncluded ? devAccountTotal : basePrice)}\n`
+      : `- Cost: ${formatMoney(devAccountIncluded ? devAccountTotal : basePrice)}\n`;
+
+    if (devAccountIncluded) {
+      const platform = devAccount.platform === 'android' ? 'Android (Google Play)' : devAccount.platform === 'ios' ? 'iOS (Apple Developer)' : 'Android + iOS';
+      const accountType = devAccount.accountType === 'organization'
+        ? (lang === 'vi' ? 'Doanh nghiệp/Tổ chức' : 'Organization')
+        : (lang === 'vi' ? 'Cá nhân/Không doanh nghiệp' : 'Individual/Non-organization');
+      const yesNo = (value: string) => value === 'yes' ? (lang === 'vi' ? 'Có' : 'Yes') : (lang === 'vi' ? 'Chưa có' : 'No');
+
+      text += lang === 'vi' ? `\n[2] ĐĂNG KÝ TÀI KHOẢN DEV\n` : `\n[2] DEVELOPER ACCOUNT REGISTRATION\n`;
+      text += lang === 'vi' ? `- Nền tảng: ${platform}\n` : `- Platform: ${platform}\n`;
+      text += lang === 'vi' ? `- Loại tài khoản: ${accountType}\n` : `- Account type: ${accountType}\n`;
+      text += lang === 'vi' ? `- Phí đăng ký: ${formatMoney(devAccountBasePrice)}\n` : `- Registration fee: ${formatMoney(devAccountBasePrice)}\n`;
+      if (devAccount.accountType === 'organization') {
+        text += lang === 'vi' ? `- Mã D-U-N-S: ${yesNo(devAccount.hasDuns)}\n` : `- D-U-N-S number: ${yesNo(devAccount.hasDuns)}\n`;
+        text += lang === 'vi' ? `- Website doanh nghiệp phục vụ đăng ký tài khoản Dev: ${yesNo(devAccount.hasBusinessWebsite)}\n` : `- Business website for developer-account registration: ${yesNo(devAccount.hasBusinessWebsite)}\n`;
+        text += lang === 'vi' ? `- Email doanh nghiệp: ${yesNo(devAccount.hasBusinessEmail)}\n` : `- Business email: ${yesNo(devAccount.hasBusinessEmail)}\n`;
+        if (devAccount.hasDuns === 'no') text += lang === 'vi' ? `- Hỗ trợ D-U-N-S: +${formatMoney(1500000)}\n` : `- D-U-N-S support: +${formatMoney(1500000)}\n`;
+        if (devAccount.hasBusinessWebsite === 'no') text += lang === 'vi' ? `- Website doanh nghiệp phục vụ đăng ký tài khoản Dev: +${formatMoney(3000000)}\n` : `- Business website for developer-account registration: +${formatMoney(3000000)}\n`;
+        if (devAccount.hasBusinessEmail === 'no') text += lang === 'vi' ? `- Email doanh nghiệp: +${formatMoney(500000)}\n` : `- Business email: +${formatMoney(500000)}\n`;
+      }
+    }
 
     if (activeDevServices.length > 0) {
       text += lang === 'vi' ? `\n[2] DỊCH VỤ LẬP TRÌNH\n` : `\n[2] DEVELOPMENT SERVICES\n`;
@@ -182,7 +292,7 @@ export default function Home() {
     if (activeAddons.length > 0) {
       text += lang === 'vi' ? `\n[3] TIỆN ÍCH BỔ SUNG\n` : `\n[3] ADD-ONS\n`;
       activeAddons.forEach((addon) => {
-        const addonName = lang === 'vi' ? addon.name : (t as any)[`addon_${addon.name.includes('Store') ? 'listing' : addon.name.includes('Reject') ? 'reject' : addon.name.includes('Tester') ? 'tester' : 'maint'}`];
+        const addonName = lang === 'vi' ? addon.name : (addon as any).enName || addon.name;
         text += `- ${addonName}: +${formatMoney(addon.price)}\n`;
       });
     }
@@ -216,7 +326,7 @@ export default function Home() {
       : `Best regards,\nLe Minh Quang - StorePublish`;
 
     setQuoteTemplate(text);
-  }, [baseName, basePrice, activeAddons, activeDevServices, total, profile, qrUrl, lang]);
+  }, [baseName, basePrice, activeAddons, activeDevServices, total, profile, qrUrl, lang, devAccountIncluded, devAccount]);
 
   const copyFormQuote = async () => {
     try {
@@ -424,8 +534,8 @@ export default function Home() {
                 <h3 className="text-[28px] font-semibold tracking-tight text-[#1d1d1f] mb-1">Android</h3>
                 <p className="text-[15px] text-[#86868b] font-medium mb-8">Basic</p>
                 <div className="flex items-end gap-2 mb-8">
-                  <div className="text-3xl font-semibold text-[#1d1d1f] tracking-tight">{lang === 'vi' ? '1.2M' : '$50'}</div>
-                  <div className="text-[17px] font-medium text-[#86868b] line-through mb-1">{lang === 'vi' ? '1.5M' : '$62'}</div>
+                  <div className="text-3xl font-semibold text-[#1d1d1f] tracking-tight">{lang === 'vi' ? '1.8M' : '$75'}</div>
+                  <div className="text-[17px] font-medium text-[#86868b] line-through mb-1">{lang === 'vi' ? '2.0M' : '$83'}</div>
                 </div>
                 <ul className="space-y-4 mb-8 text-[15px] text-[#1d1d1f]">
                   <li className="flex items-start gap-3"><Check className="w-5 h-5 text-[#86868b] shrink-0" />{lang === 'vi' ? 'Build file .aab' : 'Build .aab file'}</li>
@@ -434,7 +544,7 @@ export default function Home() {
                 </ul>
               </div>
               <button
-                onClick={() => selectPackage("android", 1200000, "Basic Android")}
+                onClick={() => selectPackage("android", 1800000, "Basic Android")}
                 className="w-full bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] py-3 rounded-full text-[15px] font-medium transition-colors"
               >
                 {t.btn_select}
@@ -466,11 +576,11 @@ export default function Home() {
 
             {/* Card 3 - Highlighted */}
             <div className="bg-[#1d1d1f] rounded-[24px] p-8 flex flex-col justify-between shadow-[0_4px_24px_rgba(0,0,0,0.08)] relative">
-              <div className="absolute top-6 right-8 text-[#f5f5f7] text-[11px] font-semibold px-2 py-1 bg-white/10 rounded-full tracking-wide uppercase">
+              <div className="absolute top-0 right-4 md:top-6 md:right-8 text-[#f5f5f7] text-[9px] md:text-[11px] font-semibold px-2 py-1 bg-white/10 rounded-full tracking-wide uppercase">
                 {t.price_popular}
               </div>
               <div>
-                <h3 className="text-[28px] font-semibold tracking-tight text-[#f5f5f7] mb-1">Combo</h3>
+                <h3 className="text-2xl md:text-[28px] leading-tight font-semibold tracking-tight text-[#f5f5f7] mb-1">Combo</h3>
                 <p className="text-[15px] text-[#86868b] font-medium mb-8">Dual Store</p>
                 <div className="flex items-end gap-2 mb-8">
                   <div className="text-3xl font-semibold text-[#f5f5f7] tracking-tight">{lang === 'vi' ? '4.0M' : '$166'}</div>
@@ -503,6 +613,7 @@ export default function Home() {
                   <li className="flex items-start gap-3"><Check className="w-5 h-5 text-[#86868b] shrink-0" />{lang === 'vi' ? 'App có Login, Social' : 'App with Login, Social'}</li>
                   <li className="flex items-start gap-3"><Check className="w-5 h-5 text-[#86868b] shrink-0" />{lang === 'vi' ? 'Soát lỗi chuyên sâu' : 'Deep bug inspection'}</li>
                   <li className="flex items-start gap-3"><Check className="w-5 h-5 text-[#86868b] shrink-0" />{lang === 'vi' ? 'Bao xử lý reject 3 vòng' : 'Covers up to 3 rejections'}</li>
+                  <li className="flex items-start gap-3"><X className="w-5 h-5 text-[#86868b] shrink-0" />{lang === 'vi' ? 'Không bao gồm bảo trì 1 tháng' : 'Does not include 1-month maintenance'}</li>
                 </ul>
               </div>
               <button
@@ -567,11 +678,11 @@ export default function Home() {
             </div>
 
             <div className="bg-[#1d1d1f] rounded-[24px] p-8 flex flex-col justify-between shadow-[0_4px_24px_rgba(0,0,0,0.08)] relative">
-              <div className="absolute top-6 right-8 text-[#f5f5f7] text-[11px] font-semibold px-2 py-1 bg-white/10 rounded-full tracking-wide uppercase">
+              <div className="absolute top-0 right-4 md:top-6 md:right-8 text-[#f5f5f7] text-[9px] md:text-[11px] font-semibold px-2 py-1 bg-white/10 rounded-full tracking-wide uppercase">
                 {lang === 'vi' ? 'DOANH NGHIỆP' : 'ENTERPRISE'}
               </div>
               <div>
-                <h3 className="text-[28px] font-semibold tracking-tight text-[#f5f5f7] mb-1">{lang === 'vi' ? 'CRM Custom' : 'Custom CRM'}</h3>
+                <h3 className="text-2xl md:text-[28px] leading-tight font-semibold tracking-tight text-[#f5f5f7] mb-1">CRM</h3>
                 <p className="text-[15px] text-[#86868b] font-medium mb-8">{lang === 'vi' ? 'Hệ thống Quản trị' : 'Management System'}</p>
                 <div className="flex items-end gap-2 mb-8">
                   <div className="text-3xl font-semibold text-[#f5f5f7] tracking-tight">{lang === 'vi' ? 'Từ 15.0M' : '$625 – $1,041'}</div>
@@ -629,18 +740,22 @@ export default function Home() {
             {/* Left side - Selection */}
             <div className="lg:col-span-7">
               {/* Tabs */}
-              <div className="flex overflow-x-auto gap-2 pb-4 mb-4 scrollbar-hide snap-x">
-                {[
+              <div ref={serviceTabsRef} className="service-tabs flex overflow-x-auto gap-2 pb-4 mb-4">
+                {[0, 1].map(copy => (
+                  <div key={copy} data-service-tab-set className="flex shrink-0 gap-2" aria-hidden={copy === 1}>
+                    {[
                   { id: 'platform', label: lang === 'vi' ? 'Phát hành App' : 'App Publishing' },
+                  { id: 'dev-account', label: lang === 'vi' ? 'Tài khoản Dev' : 'Dev Account' },
                   { id: 'web', label: lang === 'vi' ? 'Website' : 'Website' },
                   { id: 'app', label: lang === 'vi' ? 'Mobile App' : 'Mobile App' },
                   { id: 'crm', label: lang === 'vi' ? 'CRM Custom' : 'CRM Custom' },
-                  { id: 'ai', label: lang === 'vi' ? 'Giải pháp AI' : 'AI Solutions' }
+                  { id: 'ai', label: lang === 'vi' ? 'Giải pháp AI' : 'AI Solutions' },
+                  { id: 'ads', label: 'App Growth & Ads' }
                 ].map(tab => (
                   <button
-                    key={tab.id}
+                    key={`${copy}-${tab.id}`}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`shrink-0 snap-start px-5 py-2.5 rounded-full text-[15px] font-medium transition-all ${
+                    className={`shrink-0 px-5 py-2.5 rounded-full text-[15px] font-medium transition-all ${
                       activeTab === tab.id 
                         ? 'bg-[#1d1d1f] text-white shadow-md' 
                         : 'bg-white text-[#86868b] hover:bg-[#f5f5f7] border border-[#d2d2d7]/50'
@@ -648,6 +763,8 @@ export default function Home() {
                   >
                     {tab.label}
                   </button>
+                ))}
+                  </div>
                 ))}
               </div>
 
@@ -657,10 +774,10 @@ export default function Home() {
                 <h3 className="text-[19px] font-semibold text-[#1d1d1f] mb-6 tracking-tight">{lang === 'vi' ? '1. Nền tảng' : '1. Platform'}</h3>
                 <div className="space-y-4">
                   {[
-                    { id: "android", name: "Basic Android", price: 1200000, fakePrice: lang === 'vi' ? "1.500.000 ₫" : "$62", desc: lang === 'vi' ? "Phát hành lên Google Play" : "Publish to Google Play" },
+                    { id: "android", name: "Basic Android", price: 1800000, fakePrice: lang === 'vi' ? "2.000.000 ₫" : "$83", desc: lang === 'vi' ? "Phát hành lên Google Play" : "Publish to Google Play" },
                     { id: "ios", name: "Basic iOS", price: 2500000, fakePrice: lang === 'vi' ? "3.000.000 ₫" : "$125", desc: lang === 'vi' ? "Phát hành lên App Store" : "Publish to App Store" },
                     { id: "combo", name: "Combo Dual Store", price: 4000000, fakePrice: lang === 'vi' ? "5.500.000 ₫" : "$229", desc: lang === 'vi' ? "Cả Google Play và App Store" : "Both Google Play and App Store" },
-                    { id: "full", name: "Full Support", price: 6500000, fakePrice: lang === 'vi' ? "8.500.000 ₫" : "$354", desc: lang === 'vi' ? "Hỗ trợ toàn diện, bảo hành reject" : "Full support, rejection warranty" },
+                    { id: "full", name: "Full Support", price: 6500000, fakePrice: lang === 'vi' ? "8.500.000 ₫" : "$354", desc: lang === 'vi' ? "Hỗ trợ toàn diện, bảo hành reject (không gồm bảo trì 1 tháng)" : "Full support, rejection warranty (1-month maintenance not included)" },
                   ].map((pkg) => (
                     <label
                       key={pkg.id}
@@ -695,6 +812,78 @@ export default function Home() {
               </div>
               )}
 
+              {activeTab === 'dev-account' && (
+                <div className="bg-white rounded-[24px] p-8 shadow-[0_4px_24px_rgba(0,0,0,0.04)] mb-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
+                    <div>
+                      <h3 className="text-[19px] font-semibold text-[#1d1d1f] tracking-tight">{lang === 'vi' ? 'Đăng ký tài khoản Dev' : 'Developer Account Registration'}</h3>
+                      <p className="text-[13px] text-[#86868b] mt-1">{lang === 'vi' ? 'Chọn thông tin hồ sơ để nhận báo giá chính xác.' : 'Select your profile details for an accurate quote.'}</p>
+                    </div>
+                    <span className={`shrink-0 px-4 py-2 rounded-full text-[13px] font-semibold ${devAccountIncluded ? 'bg-[#0071e3] text-white' : 'bg-[#f5f5f7] text-[#86868b]'}`}>
+                      {devAccountIncluded ? (lang === 'vi' ? 'Đã thêm vào báo giá' : 'Added to quote') : (lang === 'vi' ? 'Chọn cấu hình để báo giá' : 'Select a configuration to quote')}
+                    </span>
+                  </div>
+
+                  <div className="space-y-7">
+                    <div>
+                      <p className="text-[14px] font-semibold text-[#1d1d1f] mb-3">{lang === 'vi' ? 'Nền tảng đăng ký' : 'Registration platform'}</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {[
+                          { value: 'android', label: 'Android', desc: 'Google Play Console' },
+                          { value: 'ios', label: 'iOS', desc: 'Apple Developer' },
+                          { value: 'both', label: 'Android + iOS', desc: lang === 'vi' ? 'Cả hai nền tảng' : 'Both platforms' },
+                        ].map(option => (
+                          <button key={option.value} type="button" onClick={() => { setDevAccount(prev => ({ ...prev, platform: option.value })); setDevAccountIncluded(true); }} className={`text-left p-4 rounded-[14px] border transition-all ${devAccount.platform === option.value ? 'border-[#0071e3] ring-1 ring-[#0071e3] bg-[#0071e3]/5' : 'border-[#d2d2d7] hover:border-[#86868b]'}`}>
+                            <span className="block text-[15px] font-semibold text-[#1d1d1f]">{option.label}</span>
+                            <span className="block text-[12px] text-[#86868b] mt-1">{option.desc}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-[14px] font-semibold text-[#1d1d1f] mb-3">{lang === 'vi' ? 'Loại tài khoản' : 'Account type'}</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {[
+                          { value: 'individual', label: lang === 'vi' ? 'Cá nhân / Không doanh nghiệp' : 'Individual / Non-organization' },
+                          { value: 'organization', label: lang === 'vi' ? 'Doanh nghiệp / Tổ chức' : 'Organization / Business' },
+                        ].map(option => (
+                          <button key={option.value} type="button" onClick={() => { setDevAccount(prev => ({ ...prev, accountType: option.value })); setDevAccountIncluded(true); }} className={`text-left px-4 py-3 rounded-[14px] border text-[14px] font-medium transition-all ${devAccount.accountType === option.value ? 'border-[#0071e3] ring-1 ring-[#0071e3] bg-[#0071e3]/5 text-[#0071e3]' : 'border-[#d2d2d7] text-[#1d1d1f] hover:border-[#86868b]'}`}>{option.label}</button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {devAccount.accountType === 'organization' && [
+                      { key: 'hasDuns', title: lang === 'vi' ? 'Mã D-U-N-S' : 'D-U-N-S number' },
+                      { key: 'hasBusinessWebsite', title: lang === 'vi' ? 'Website doanh nghiệp phục vụ đăng ký Dev' : 'Business website for Dev registration' },
+                      { key: 'hasBusinessEmail', title: lang === 'vi' ? 'Email doanh nghiệp' : 'Business email' },
+                    ].map(field => (
+                      <div key={field.key} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <p className="text-[14px] font-semibold text-[#1d1d1f]">{field.title}</p>
+                        <div className="grid grid-cols-2 gap-2 sm:w-56">
+                          {[
+                            { value: 'yes', label: lang === 'vi' ? 'Có' : 'Yes' },
+                            { value: 'no', label: lang === 'vi' ? 'Chưa có' : 'No' },
+                          ].map(option => (
+                            <button key={option.value} type="button" onClick={() => { setDevAccount(prev => ({ ...prev, [field.key]: option.value })); setDevAccountIncluded(true); }} className={`px-3 py-2 rounded-full border text-[13px] font-medium transition-all ${devAccount[field.key as keyof typeof devAccount] === option.value ? 'border-[#0071e3] bg-[#0071e3] text-white' : 'border-[#d2d2d7] text-[#86868b] hover:border-[#86868b]'}`}>{option.label}</button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+
+                    <div className="rounded-[16px] bg-[#f5f5f7] p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div>
+                        <p className="text-[14px] font-semibold text-[#1d1d1f]">{lang === 'vi' ? 'Chi phí đăng ký dự kiến' : 'Estimated registration cost'}</p>
+                        {devAccount.accountType === 'organization' && devAccountSupportTotal > 0 && (
+                          <p className="text-[12px] text-[#86868b] mt-1">{lang === 'vi' ? `Đã gồm ${formatMoney(devAccountSupportTotal)} phí hỗ trợ hồ sơ còn thiếu.` : `Includes ${formatMoney(devAccountSupportTotal)} for missing business profile support.`}</p>
+                        )}
+                      </div>
+                      <span className="text-[22px] font-semibold text-[#0071e3] whitespace-nowrap">{formatMoney(Math.round(devAccountTotal * multiplier))}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {activeTab === 'web' && (
               <div className="bg-white rounded-[24px] p-8 shadow-[0_4px_24px_rgba(0,0,0,0.04)] mb-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <h3 className="text-[19px] font-semibold text-[#1d1d1f] mb-6 tracking-tight">{lang === 'vi' ? 'Lập trình Website' : 'Website Development'}</h3>
@@ -718,7 +907,7 @@ export default function Home() {
                           <div className="text-[13px] text-[#86868b] mt-1">{lang === 'vi' ? service.desc : service.enDesc}</div>
                         </div>
                         <div className="flex items-center gap-2 justify-end">
-                          <div className="text-[13px] font-medium text-[#86868b] line-through whitespace-nowrap">{lang === 'vi' ? formatMoney(Math.round(parseInt(service.fakePrice.replace(/[^0-9]/g, '')) * multiplier)) : `$${Math.round(parseInt(service.fakePrice.replace(/[^0-9]/g, '')) * multiplier / 24000)}`}</div>
+                          {service.fakePrice && <div className="text-[13px] font-medium text-[#86868b] line-through whitespace-nowrap">{lang === 'vi' ? formatMoney(Math.round(parseInt(service.fakePrice.replace(/[^0-9]/g, '')) * multiplier)) : `$${Math.round(parseInt(service.fakePrice.replace(/[^0-9]/g, '')) * multiplier / 24000)}`}</div>}
                           <div className="text-[17px] font-semibold text-[#1d1d1f] whitespace-nowrap">{new Intl.NumberFormat(lang === 'en' ? 'en-US' : 'vi-VN', {style: 'currency', currency: lang === 'en' ? 'USD' : 'VND', maximumFractionDigits: 0}).format(lang === 'en' ? Math.round(service.price * multiplier) / 24000 : Math.round(service.price * multiplier))}</div>
                         </div>
                       </div>
@@ -761,9 +950,10 @@ export default function Home() {
               </div>
               )}
 
-              {(activeTab === 'crm' || activeTab === 'ai') && (
+              {(activeTab === 'crm' || activeTab === 'ai' || activeTab === 'ads') && (
               <div className="bg-white rounded-[24px] p-8 shadow-[0_4px_24px_rgba(0,0,0,0.04)] mb-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                <h3 className="text-[19px] font-semibold text-[#1d1d1f] mb-6 tracking-tight">{activeTab === 'ai' ? (lang === 'vi' ? 'Tư vấn & Triển khai AI' : 'AI Consulting & Implementation') : (lang === 'vi' ? 'Hệ thống CRM Custom' : 'Custom CRM System')}</h3>
+                <h3 className="text-[19px] font-semibold text-[#1d1d1f] mb-2 tracking-tight">{activeTab === 'ai' ? (lang === 'vi' ? 'Tư vấn & Triển khai AI' : 'AI Consulting & Implementation') : activeTab === 'ads' ? 'App Growth & Ads' : (lang === 'vi' ? 'Hệ thống CRM Custom' : 'Custom CRM System')}</h3>
+                {activeTab === 'ads' && <p className="text-[13px] text-[#86868b] mb-6">{lang === 'vi' ? 'Phí dịch vụ quản lý quảng cáo; chưa bao gồm ngân sách quảng cáo thanh toán trực tiếp cho Meta/TikTok.' : 'Advertising management service fee; Meta/TikTok ad spend is paid separately.'}</p>}
                 <div className="space-y-4">
                   {Object.entries(devServices).filter(([_, s]) => s.category === activeTab).map(([key, service]) => (
                     <label
@@ -784,7 +974,7 @@ export default function Home() {
                           <div className="text-[13px] text-[#86868b] mt-1">{lang === 'vi' ? service.desc : service.enDesc}</div>
                         </div>
                         <div className="flex items-center gap-2 justify-end">
-                          <div className="text-[13px] font-medium text-[#86868b] line-through whitespace-nowrap">{lang === 'vi' ? formatMoney(Math.round(parseInt(service.fakePrice.replace(/[^0-9]/g, '')) * multiplier)) : `$${Math.round(parseInt(service.fakePrice.replace(/[^0-9]/g, '')) * multiplier / 24000)}`}</div>
+                          {service.fakePrice && <div className="text-[13px] font-medium text-[#86868b] line-through whitespace-nowrap">{lang === 'vi' ? formatMoney(Math.round(parseInt(service.fakePrice.replace(/[^0-9]/g, '')) * multiplier)) : `$${Math.round(parseInt(service.fakePrice.replace(/[^0-9]/g, '')) * multiplier / 24000)}`}</div>}
                           <div className="text-[17px] font-semibold text-[#1d1d1f] whitespace-nowrap">{new Intl.NumberFormat(lang === 'en' ? 'en-US' : 'vi-VN', {style: 'currency', currency: lang === 'en' ? 'USD' : 'VND', maximumFractionDigits: 0}).format(lang === 'en' ? Math.round(service.price * multiplier) / 24000 : Math.round(service.price * multiplier))}</div>
                         </div>
                       </div>
@@ -800,7 +990,7 @@ export default function Home() {
                   {Object.entries(addons)
                     .filter(([_, addon]) => addon.categories?.includes(activeTab))
                     .map(([key, addon]) => {
-                    if (key === "androidTester" && baseType === "ios") return null;
+                    if ((key === "androidTester600" || key === "androidTester800") && baseType === "ios") return null;
                     return (
                       <label
                         key={key}
@@ -908,18 +1098,18 @@ export default function Home() {
                 
                 <div className="space-y-5 text-[15px] mb-8 pb-8 border-b border-white/10">
                   <div className="flex justify-between items-start">
-                    <span className="text-[#f5f5f7]/80">{baseName}</span>
-                    <span className="font-semibold">{formatMoney(basePrice)}</span>
+                    <span className="text-[#f5f5f7]/80">{devAccountIncluded ? (lang === 'vi' ? 'Đăng ký tài khoản Dev' : 'Developer Account Registration') : baseName}</span>
+                    <span className="font-semibold">{formatMoney(devAccountIncluded ? devAccountTotal : basePrice)}</span>
                   </div>
                   {activeDevServices.map((s, idx) => (
                     <div key={`dev-${idx}`} className="flex justify-between items-start">
-                       <span className="text-[#f5f5f7]/80">{lang === 'vi' ? s.name : s.name.replace('Lập trình ', 'Dev ').replace('Hệ thống ', 'System ')}</span>
+                       <span className="text-[#f5f5f7]/80">{lang === 'vi' ? s.name : s.enName}</span>
                       <span className="font-semibold">+{formatMoney(s.price)}</span>
                     </div>
                   ))}
                   {activeAddons.map((addon, idx) => (
                     <div key={idx} className="flex justify-between items-start">
-                       <span className="text-[#f5f5f7]/80">{lang === 'vi' ? addon.name : (t as any)[`addon_${addon.name.includes('Store') ? 'listing' : addon.name.includes('Reject') ? 'reject' : addon.name.includes('Tester') ? 'tester' : 'maint'}`]}</span>
+                       <span className="text-[#f5f5f7]/80">{lang === 'vi' ? addon.name : (addon as any).enName || addon.name}</span>
                       <span className="font-semibold">+{formatMoney(addon.price)}</span>
                     </div>
                   ))}
@@ -1160,7 +1350,7 @@ export default function Home() {
                   <tr className="hover:bg-[#f5f5f7]/30 transition-colors">
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f]">{lang === 'vi' ? 'Gói Android cơ bản' : 'Basic Android Package'}</td>
                     <td className="px-6 py-5 text-[#86868b] leading-relaxed">{lang === 'vi' ? 'Build file release .aab, kiểm tra package name, version, signing key, hỗ trợ upload Google Play, điền thông tin cơ bản' : 'Build .aab release file, check package name, version, signing key, support Google Play upload, fill basic info'}</td>
-                    <td className="px-6 py-5 font-semibold text-[#1d1d1f] text-right whitespace-nowrap">{lang === 'vi' ? '800.000 – 1.500.000đ' : '$33 – $62'}</td>
+                    <td className="px-6 py-5 font-semibold text-[#1d1d1f] text-right whitespace-nowrap">{lang === 'vi' ? '1.800.000 – 3.000.000đ' : '$75 – $125'}</td>
                   </tr>
                   <tr className="hover:bg-[#f5f5f7]/30 transition-colors">
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f]">{lang === 'vi' ? 'Gói iOS cơ bản' : 'Basic iOS Package'}</td>
@@ -1175,7 +1365,7 @@ export default function Home() {
                   <tr className="hover:bg-[#f5f5f7]/30 transition-colors">
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f]">{lang === 'vi' ? 'Cung cấp 20 Tester Android (14 ngày)' : 'Provide 20 Android Testers (14 days)'}</td>
                     <td className="px-6 py-5 text-[#86868b] leading-relaxed">{lang === 'vi' ? 'Cung cấp đủ 20 người dùng thật tham gia test kín liên tục trong 14 ngày, báo cáo bug và đáp ứng 100% điều kiện bắt buộc của Google Play cho tài khoản cá nhân mới tạo.' : 'Provide exactly 20 real users for closed testing over 14 days, bug reporting, fully meeting Google Play requirements for new personal accounts.'}</td>
-                    <td className="px-6 py-5 font-semibold text-[#1d1d1f] text-right whitespace-nowrap">{lang === 'vi' ? '500.000 – 800.000đ' : '$21 – $33'}</td>
+                    <td className="px-6 py-5 font-semibold text-[#1d1d1f] text-right whitespace-nowrap">{lang === 'vi' ? '600.000đ – 800.000đ' : '$25 – $33'}</td>
                   </tr>
                   <tr className="hover:bg-[#f5f5f7]/30 transition-colors">
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f]">{lang === 'vi' ? 'Gói xử lý reject' : 'Rejection Handling'}</td>
@@ -1259,6 +1449,44 @@ export default function Home() {
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f]">{lang === 'vi' ? 'Tư vấn & Triển khai AI cho Doanh nghiệp' : 'Enterprise AI Consulting & Implementation'}</td>
                     <td className="px-6 py-5 text-[#86868b] leading-relaxed">{lang === 'vi' ? 'Khảo sát nghiệp vụ, xác định bài toán AI ưu tiên, thiết kế lộ trình triển khai, tích hợp chatbot/trợ lý AI và tự động hóa quy trình vào hệ thống hiện có.' : 'Assess operations, prioritize AI use cases, design an implementation roadmap, and integrate AI assistants, chatbots, and workflow automation with existing systems.'}</td>
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f] text-right whitespace-nowrap">{lang === 'vi' ? '20.000.000đ – 35.000.000đ' : '$833 – $1,458'}</td>
+                  </tr>
+
+                  {/* Developer Account Registration */}
+                  {[
+                    { vi: 'Đăng ký Android – tài khoản cá nhân', en: 'Android Registration – Individual Account', detailVi: 'Hỗ trợ đăng ký và cấu hình tài khoản Google Play Console cá nhân.', detailEn: 'Registration and configuration support for an individual Google Play Console account.', priceVi: '1.500.000đ – 2.700.000đ', priceEn: '$62 – $112' },
+                    { vi: 'Đăng ký Android – tài khoản doanh nghiệp', en: 'Android Registration – Organization Account', detailVi: 'Hỗ trợ đăng ký tài khoản Google Play Console cho doanh nghiệp/tổ chức.', detailEn: 'Registration support for a business or organization Google Play Console account.', priceVi: '2.500.000đ – 4.500.000đ', priceEn: '$104 – $188' },
+                    { vi: 'Đăng ký iOS – tài khoản cá nhân', en: 'iOS Registration – Individual Account', detailVi: 'Hỗ trợ đăng ký tài khoản Apple Developer cá nhân.', detailEn: 'Registration support for an individual Apple Developer account.', priceVi: '2.500.000đ – 4.500.000đ', priceEn: '$104 – $188' },
+                    { vi: 'Đăng ký iOS – tài khoản doanh nghiệp', en: 'iOS Registration – Organization Account', detailVi: 'Hỗ trợ chuẩn bị và đăng ký tài khoản Apple Developer doanh nghiệp.', detailEn: 'Preparation and registration support for an organization Apple Developer account.', priceVi: '3.500.000đ – 6.300.000đ', priceEn: '$146 – $263' },
+                    { vi: 'Đăng ký Android + iOS – tài khoản cá nhân', en: 'Android + iOS Registration – Individual Accounts', detailVi: 'Đăng ký đồng thời tài khoản Google Play Console và Apple Developer cá nhân.', detailEn: 'Combined registration for individual Google Play Console and Apple Developer accounts.', priceVi: '4.000.000đ – 7.200.000đ', priceEn: '$167 – $300' },
+                    { vi: 'Đăng ký Android + iOS – tài khoản doanh nghiệp', en: 'Android + iOS Registration – Organization Accounts', detailVi: 'Đăng ký đồng thời tài khoản Google Play Console và Apple Developer cho doanh nghiệp.', detailEn: 'Combined registration for organization Google Play Console and Apple Developer accounts.', priceVi: '5.500.000đ – 9.900.000đ', priceEn: '$229 – $413' },
+                    { vi: 'Hỗ trợ mã D-U-N-S', en: 'D-U-N-S Number Support', detailVi: 'Hỗ trợ chuẩn bị thông tin và làm hồ sơ xin mã D-U-N-S cho doanh nghiệp.', detailEn: 'Support for preparing information and applying for a business D-U-N-S number.', priceVi: '1.500.000đ – 2.700.000đ', priceEn: '$62 – $112' },
+                    { vi: 'Website doanh nghiệp phục vụ đăng ký tài khoản Dev', en: 'Business Website for Developer Account Registration', detailVi: 'Xây dựng website doanh nghiệp cơ bản phục vụ riêng cho hồ sơ đăng ký tài khoản Dev doanh nghiệp.', detailEn: 'Basic business website development specifically for an organization developer-account registration profile.', priceVi: '3.000.000đ – 5.400.000đ', priceEn: '$125 – $225' },
+                    { vi: 'Email doanh nghiệp', en: 'Business Email', detailVi: 'Thiết lập email theo tên miền doanh nghiệp phục vụ xác minh hồ sơ.', detailEn: 'Business-domain email setup for profile verification.', priceVi: '500.000đ – 900.000đ', priceEn: '$21 – $38' },
+                  ].map(service => (
+                    <tr key={service.vi} className="bg-[#f5f5f7]/20 hover:bg-[#f5f5f7]/50 transition-colors first:border-t-2 first:border-[#d2d2d7]/50">
+                      <td className="px-6 py-5 font-semibold text-[#1d1d1f]">{lang === 'vi' ? service.vi : service.en}</td>
+                      <td className="px-6 py-5 text-[#86868b] leading-relaxed">{lang === 'vi' ? service.detailVi : service.detailEn}</td>
+                      <td className="px-6 py-5 font-semibold text-[#1d1d1f] text-right whitespace-nowrap">{lang === 'vi' ? service.priceVi : service.priceEn}</td>
+                    </tr>
+                  ))}
+
+                  {/* App Growth & Ads */}
+                  {[
+                    { vi: 'App Growth & Ads – Starter', en: 'App Growth & Ads – Starter', detailVi: 'Meta Ads hoặc TikTok Ads; thiết lập tài khoản và campaign App Install; nghiên cứu khách hàng, A/B test, tối ưu CPC/CTR/CPI; theo dõi hàng tuần, báo cáo tháng; tối đa 3 campaign. Ngân sách ads đề xuất từ 5.000.000đ/tháng.', detailEn: 'Meta Ads or TikTok Ads; App Install campaign setup, audience research, A/B testing, CPC/CTR/CPI optimization, weekly optimization, monthly reporting, and up to 3 active campaigns. Suggested ad spend from $208/month.', priceVi: '2.490.000đ/tháng', priceEn: '$104/month' },
+                    { vi: 'App Growth & Ads – Growth', en: 'App Growth & Ads – Growth', detailVi: 'Meta Ads + TikTok Ads; App Install, Conversion/Registration, Retargeting, Custom/Lookalike Audience; 6 creative/video ads mỗi tháng; tối ưu CPI/CPA và báo cáo tăng trưởng tháng. Ngân sách ads đề xuất 10.000.000đ – 30.000.000đ/tháng.', detailEn: 'Meta Ads + TikTok Ads; App Install, Conversion/Registration, retargeting, Custom/Lookalike Audiences, 6 creatives/videos per month, CPI/CPA optimization, and monthly growth reporting. Suggested ad spend $417–$1,250/month.', priceVi: '4.490.000đ/tháng', priceEn: '$187/month' },
+                    { vi: 'App Growth & Ads – Scale', en: 'App Growth & Ads – Scale', detailVi: 'Chiến lược User Acquisition; campaign Install/Register/Active User; retargeting nâng cao; 10–15 creative/video ads mỗi tháng; theo dõi CPI/CPA/ROAS, phân tích funnel, scale campaign hiệu quả và tư vấn chiến lược. Ngân sách ads đề xuất từ 30.000.000đ/tháng.', detailEn: 'User Acquisition strategy; Install/Register/Active User campaigns, advanced retargeting, 10–15 creatives/videos per month, CPI/CPA/ROAS tracking, funnel analysis, campaign scaling, and strategy consulting. Suggested ad spend from $1,250/month.', priceVi: '7.900.000đ/tháng', priceEn: '$329/month' },
+                    { vi: 'App Growth & Ads – Setup Only', en: 'App Growth & Ads – Setup Only', detailVi: 'Setup Meta Ads, TikTok Ads, kết nối ứng dụng, campaign ban đầu, audience và tracking cơ bản; bàn giao cấu hình để khách tự vận hành.', detailEn: 'Meta Ads and TikTok Ads setup, app connection, initial campaign, basic audiences and tracking, plus configuration handover for self-management.', priceVi: '1.490.000đ/lần', priceEn: '$62/one-time' },
+                    { vi: 'App Growth & Ads – Growth 3 Tháng', en: 'App Growth & Ads – Growth 3 Months', detailVi: 'Gói Growth trong 3 tháng; tiết kiệm 1.570.000đ so với thanh toán hàng tháng.', detailEn: 'Three-month Growth package; saves $65 compared with monthly payment.', priceVi: '11.900.000đ', priceEn: '$496' },
+                    { vi: 'App Growth & Ads – Scale 3 Tháng', en: 'App Growth & Ads – Scale 3 Months', detailVi: 'Gói Scale trong 3 tháng; tiết kiệm 1.800.000đ so với thanh toán hàng tháng.', detailEn: 'Three-month Scale package; saves $75 compared with monthly payment.', priceVi: '21.900.000đ', priceEn: '$913' },
+                  ].map(service => (
+                    <tr key={service.vi} className="bg-[#f5f5f7]/20 hover:bg-[#f5f5f7]/50 transition-colors">
+                      <td className="px-6 py-5 font-semibold text-[#1d1d1f]">{service.vi}</td>
+                      <td className="px-6 py-5 text-[#86868b] leading-relaxed">{lang === 'vi' ? service.detailVi : service.detailEn}</td>
+                      <td className="px-6 py-5 font-semibold text-[#1d1d1f] text-right whitespace-nowrap">{lang === 'vi' ? service.priceVi : service.priceEn}</td>
+                    </tr>
+                  ))}
+                  <tr className="bg-[#fff8e6]">
+                    <td colSpan={3} className="px-6 py-4 text-[13px] text-[#6b5a2c] leading-relaxed">{lang === 'vi' ? 'Lưu ý: Ngân sách quảng cáo được khách hàng thanh toán riêng cho Meta/TikTok và không nằm trong phí dịch vụ StorePublish. StorePublish không cam kết số lượt cài đặt cố định; hiệu quả phụ thuộc vào sản phẩm, nội dung, thị trường, ngân sách và dữ liệu thực tế.' : 'Note: Advertising spend is paid separately by the client to Meta/TikTok and is not included in the StorePublish service fee. StorePublish does not guarantee a fixed number of installs; results depend on the product, creative, market, budget, and real-world data.'}</td>
                   </tr>
                 </tbody>
               </table>
@@ -1352,6 +1580,29 @@ export default function Home() {
                     </p>
                     <div className="flex flex-wrap gap-2 mt-4">
                       {['Flutter', 'Community Platform', 'Full-stack', 'UI/UX Design', 'Product Management'].map(tag => (
+                        <span key={tag} className="text-[12px] text-[#1d1d1f] bg-[#f5f5f7] px-3 py-1 rounded-full font-medium">{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* AutoFarm */}
+                  <div className="bg-white rounded-[20px] p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-[#d2d2d7]/30">
+                    <div className="flex items-start justify-between gap-4 mb-3">
+                      <div>
+                        <h3 className="text-[17px] font-semibold text-[#1d1d1f]">AutoFarm</h3>
+                        <a href="https://www.autofarm.space/" target="_blank" rel="noopener noreferrer" className="text-[14px] text-[#0071e3] font-medium hover:underline">
+                          autofarm.space
+                        </a>
+                      </div>
+                      <span className="text-[12px] text-[#86868b] bg-[#f5f5f7] px-3 py-1 rounded-full whitespace-nowrap shrink-0">{lang === 'vi' ? 'Dự án cá nhân' : 'Personal project'}</span>
+                    </div>
+                    <p className="text-[14px] text-[#86868b] leading-relaxed">
+                      {lang === 'vi'
+                        ? 'AutoFarm là hệ thống tự động hoá social media, cho phép nuôi nick, tự động tương tác trên Threads, clone và đăng Facebook Reels từ Shopee Affiliate, vận hành 24/7 và báo cáo trực tiếp qua Telegram.'
+                        : 'AutoFarm is a social-media automation platform for account nurturing, automated Threads engagement, Shopee Affiliate-to-Facebook Reels cloning and publishing, 24/7 operation, and direct Telegram reporting.'}
+                    </p>
+                    <div className="flex flex-wrap gap-2 mt-4">
+                      {['Threads Automation', 'Facebook Reels', 'Telegram Bot', 'Puppeteer', 'Full-stack'].map(tag => (
                         <span key={tag} className="text-[12px] text-[#1d1d1f] bg-[#f5f5f7] px-3 py-1 rounded-full font-medium">{tag}</span>
                       ))}
                     </div>

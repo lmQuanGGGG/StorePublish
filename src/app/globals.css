@@ -15,6 +15,15 @@
     background: #94a3b8;
 }
 
+/* Keep the auto-scrolling service tabs clean without a visible scrollbar. */
+.service-tabs {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.service-tabs::-webkit-scrollbar {
+    display: none;
+}
+
 @theme inline {
   --font-sans: var(--font-inter);
 }
