@@ -5,7 +5,7 @@ export const translations = {
     nav_calc: "Tính phí",
     nav_services: "Dịch vụ chi tiết",
     nav_create_quote: "Tạo báo giá",
-    nav_about: "Về tôi",
+    nav_about: "Về StorePublish",
     nav_contact: "Liên hệ",
 
     // Hero
@@ -68,7 +68,7 @@ export const translations = {
     nav_calc: "Calculator",
     nav_services: "Detailed Services",
     nav_create_quote: "Create Quote",
-    nav_about: "About Me",
+    nav_about: "About StorePublish",
     nav_contact: "Contact",
 
     // Hero

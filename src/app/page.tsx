@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import {
   Smartphone,
   Check,
@@ -10,9 +11,8 @@ import {
   ArrowRight,
   Menu,
   X,
-  Globe,
-  Mail,
-  MapPin
+  SquareArrowOutUpRight,
+  Mail
 } from "lucide-react";
 import { translations } from "./translations";
 
@@ -22,6 +22,7 @@ export default function Home() {
   const serviceTabsRef = useRef<HTMLDivElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('platform');
+  const [activeServicePage, setActiveServicePage] = useState('store');
   const [basePrice, setBasePrice] = useState(1800000);
   const [baseName, setBaseName] = useState("Basic Android");
   const [baseType, setBaseType] = useState("android");
@@ -136,6 +137,38 @@ export default function Home() {
       tabs.removeEventListener('mouseleave', resumeAfterHover);
     };
   }, [lang]);
+
+  useEffect(() => {
+    const sections = document.querySelectorAll<HTMLElement>('[data-reveal], [data-reveal-item]');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const pages = ['store', 'web', 'app', 'crm-ai', 'dev', 'ads'];
+    const timer = window.setInterval(() => {
+      setActiveServicePage((current) => pages[(pages.indexOf(current) + 1) % pages.length]);
+    }, 7000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const aboutSection = document.getElementById('about');
+    const packagesSection = document.getElementById('packages');
+    if (aboutSection && packagesSection) packagesSection.before(aboutSection);
+  }, []);
 
   const formatMoney = (amount: number) => {
     if (lang === 'en') {
@@ -402,10 +435,10 @@ export default function Home() {
           
           {/* Desktop Nav */}
           <nav className="hidden md:flex space-x-8 text-xs font-medium text-[#1d1d1f]/80">
+            <a href="#about" className="hover:text-[#1d1d1f] transition-colors">{t.nav_about}</a>
             <a href="#packages" className="hover:text-[#1d1d1f] transition-colors">{t.nav_pricing}</a>
             <a href="#calculator" className="hover:text-[#1d1d1f] transition-colors">{t.nav_calc}</a>
             <a href="#services" className="hover:text-[#1d1d1f] transition-colors">{t.nav_services}</a>
-            <a href="#about" className="hover:text-[#1d1d1f] transition-colors">{t.nav_about}</a>
             <a href="#contact" className="hover:text-[#1d1d1f] transition-colors">{t.nav_contact}</a>
           </nav>
           
@@ -450,10 +483,10 @@ export default function Home() {
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden absolute top-12 left-0 w-full bg-white/95 backdrop-blur-md border-b border-[#1d1d1f]/10 shadow-lg py-4 px-4 flex flex-col gap-4">
+            <a href="#about" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-[#1d1d1f]">{t.nav_about}</a>
             <a href="#packages" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-[#1d1d1f]">{t.nav_pricing}</a>
             <a href="#calculator" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-[#1d1d1f]">{t.nav_calc}</a>
             <a href="#services" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-[#1d1d1f]">{t.nav_services}</a>
-            <a href="#about" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-[#1d1d1f]">{t.nav_about}</a>
             <a href="#contact" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-[#1d1d1f]">{t.nav_contact}</a>
             <a href="#calculator" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-[#0071e3]">{t.nav_create_quote}</a>
           </div>
@@ -518,7 +551,7 @@ export default function Home() {
       </section>
 
       {/* Pricing Packages */}
-      <section id="packages" className="py-20 scroll-mt-12 relative z-10">
+      <section id="packages" data-reveal className="py-20 scroll-mt-12 relative z-10">
         <div className="max-w-6xl mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
             <h2 
@@ -726,7 +759,7 @@ export default function Home() {
       </section>
 
       {/* Calculator Section */}
-      <section id="calculator" className="mb-20 relative z-10 border-t border-[#d2d2d7]/50 pt-20">
+      <section id="calculator" data-reveal className="mb-20 relative z-10 border-t border-[#d2d2d7]/50 pt-20">
         <div className="max-w-6xl mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
             <h2 
@@ -1188,7 +1221,7 @@ export default function Home() {
 
 
       {/* Extra Costs & Notes (Unified) */}
-      <section className="py-20 border-t border-[#d2d2d7]/50 bg-white">
+      <section data-reveal className="py-20 border-t border-[#d2d2d7]/50 bg-white">
         <div className="max-w-6xl mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-[#f5f5f7] rounded-[24px] p-8 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
@@ -1327,7 +1360,7 @@ export default function Home() {
       </section>
 
       {/* Detailed Services Table */}
-      <section id="services" className="py-20 border-t border-[#d2d2d7]/50">
+      <section id="services" data-reveal className="py-20 border-t border-[#d2d2d7]/50">
         <div className="max-w-6xl mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
             <h2 
@@ -1336,17 +1369,37 @@ export default function Home() {
             <p className="text-[17px] text-[#86868b] max-w-2xl mx-auto">{lang === 'vi' ? 'Danh sách đầy đủ tất cả các dịch vụ hỗ trợ đưa ứng dụng lên các kho ứng dụng, áp dụng linh hoạt theo độ phức tạp của app.' : 'Full list of app publishing support services, flexibly applied depending on app complexity.'}</p>
           </div>
 
+          <div className="service-tabs flex overflow-x-auto gap-2 pb-4 mb-4 justify-start md:justify-center">
+            {[
+              { id: 'store', vi: 'Phát hành App', en: 'App Publishing' },
+              { id: 'web', vi: 'Website', en: 'Website' },
+              { id: 'app', vi: 'Mobile App', en: 'Mobile App' },
+              { id: 'crm-ai', vi: 'CRM & AI', en: 'CRM & AI' },
+              { id: 'dev', vi: 'Tài khoản Dev', en: 'Dev Account' },
+              { id: 'ads', vi: 'Growth & Ads', en: 'Growth & Ads' },
+            ].map((page) => (
+              <button key={page.id} onClick={() => setActiveServicePage(page.id)} className={`shrink-0 px-5 py-2.5 rounded-full text-[14px] font-medium transition-all ${activeServicePage === page.id ? 'bg-[#1d1d1f] text-white shadow-md' : 'bg-white text-[#86868b] border border-[#d2d2d7]/50 hover:bg-[#f5f5f7]'}`}>
+                {lang === 'vi' ? page.vi : page.en}
+              </button>
+            ))}
+          </div>
+
           <div className="bg-white rounded-[24px] shadow-[0_4px_24px_rgba(0,0,0,0.04)] overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-[#d2d2d7]/50 bg-[#f5f5f7]/50">
+            <div className="max-h-[720px] overflow-auto">
+              <table className="w-full table-fixed text-left border-collapse">
+                <colgroup>
+                  <col className="w-1/3" />
+                  <col className="w-1/3" />
+                  <col className="w-1/3" />
+                </colgroup>
+                <thead className="sticky top-0 z-10 bg-[#f5f5f7] shadow-[0_1px_0_rgba(0,0,0,0.08)]">
+                  <tr className="border-b border-[#d2d2d7]/50 bg-[#f5f5f7]">
                     <th className="px-6 py-5 text-[13px] font-semibold text-[#86868b] uppercase tracking-wider">{lang === 'vi' ? 'Gói Dịch Vụ' : 'Service Package'}</th>
                     <th className="px-6 py-5 text-[13px] font-semibold text-[#86868b] uppercase tracking-wider">{lang === 'vi' ? 'Nội dung chi tiết hỗ trợ' : 'Detailed Support Content'}</th>
                     <th className="px-6 py-5 text-[13px] font-semibold text-[#86868b] uppercase tracking-wider text-right whitespace-nowrap">{lang === 'vi' ? 'Mức Giá Đề Xuất' : 'Suggested Price'}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#d2d2d7]/30 text-[15px]">
+                <tbody className={`divide-y divide-[#d2d2d7]/30 text-[15px] ${activeServicePage === 'store' ? 'animate-in fade-in slide-in-from-right-2 duration-300' : 'hidden'}`}>
                   <tr className="hover:bg-[#f5f5f7]/30 transition-colors">
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f]">{lang === 'vi' ? 'Gói Android cơ bản' : 'Basic Android Package'}</td>
                     <td className="px-6 py-5 text-[#86868b] leading-relaxed">{lang === 'vi' ? 'Build file release .aab, kiểm tra package name, version, signing key, hỗ trợ upload Google Play, điền thông tin cơ bản' : 'Build .aab release file, check package name, version, signing key, support Google Play upload, fill basic info'}</td>
@@ -1393,6 +1446,8 @@ export default function Home() {
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f] text-right whitespace-nowrap">{lang === 'vi' ? '1.000.000 – 3.000.000đ/tháng' : '$42 – $125/mo'}</td>
                   </tr>
                   
+                </tbody>
+                <tbody className={`divide-y divide-[#d2d2d7]/30 text-[15px] ${activeServicePage === 'web' ? 'animate-in fade-in slide-in-from-right-2 duration-300' : 'hidden'}`}>
                   {/* Web Services */}
                   <tr className="bg-[#f5f5f7]/20 hover:bg-[#f5f5f7]/50 transition-colors border-t-2 border-[#d2d2d7]/50">
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f]">{lang === 'vi' ? 'Website: Landing Page' : 'Website: Landing Page'}</td>
@@ -1415,6 +1470,8 @@ export default function Home() {
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f] text-right whitespace-nowrap">{lang === 'vi' ? '30.000.000đ – 50.000.000đ' : '$1,250 – $2,083'}</td>
                   </tr>
 
+                </tbody>
+                <tbody className={`divide-y divide-[#d2d2d7]/30 text-[15px] ${activeServicePage === 'app' ? 'animate-in fade-in slide-in-from-right-2 duration-300' : 'hidden'}`}>
                   {/* App Services */}
                   <tr className="bg-[#f5f5f7]/20 hover:bg-[#f5f5f7]/50 transition-colors border-t-2 border-[#d2d2d7]/50">
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f]">{lang === 'vi' ? 'Mobile App: Bán Hàng/Booking' : 'Mobile App: Shop/Booking'}</td>
@@ -1432,6 +1489,8 @@ export default function Home() {
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f] text-right whitespace-nowrap">{lang === 'vi' ? '30.000.000đ – 50.000.000đ' : '$1,250 – $2,083'}</td>
                   </tr>
 
+                </tbody>
+                <tbody className={`divide-y divide-[#d2d2d7]/30 text-[15px] ${activeServicePage === 'crm-ai' ? 'animate-in fade-in slide-in-from-right-2 duration-300' : 'hidden'}`}>
                   {/* CRM Services */}
                   <tr className="bg-[#f5f5f7]/20 hover:bg-[#f5f5f7]/50 transition-colors border-t-2 border-[#d2d2d7]/50">
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f]">{lang === 'vi' ? 'CRM Quản Lý Bán Hàng' : 'Sales CRM'}</td>
@@ -1444,6 +1503,8 @@ export default function Home() {
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f] text-right whitespace-nowrap">{lang === 'vi' ? '35.000.000đ – 70.000.000đ' : '$1,458 – $2,916'}</td>
                   </tr>
 
+                </tbody>
+                <tbody className={`divide-y divide-[#d2d2d7]/30 text-[15px] ${activeServicePage === 'crm-ai' ? 'animate-in fade-in slide-in-from-right-2 duration-300' : 'hidden'}`}>
                   {/* AI Services */}
                   <tr className="bg-[#f5f5f7]/20 hover:bg-[#f5f5f7]/50 transition-colors border-t-2 border-[#d2d2d7]/50">
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f]">{lang === 'vi' ? 'Tư vấn & Triển khai AI cho Doanh nghiệp' : 'Enterprise AI Consulting & Implementation'}</td>
@@ -1451,6 +1512,8 @@ export default function Home() {
                     <td className="px-6 py-5 font-semibold text-[#1d1d1f] text-right whitespace-nowrap">{lang === 'vi' ? '20.000.000đ – 35.000.000đ' : '$833 – $1,458'}</td>
                   </tr>
 
+                </tbody>
+                <tbody className={`divide-y divide-[#d2d2d7]/30 text-[15px] ${activeServicePage === 'dev' ? 'animate-in fade-in slide-in-from-right-2 duration-300' : 'hidden'}`}>
                   {/* Developer Account Registration */}
                   {[
                     { vi: 'Đăng ký Android – tài khoản cá nhân', en: 'Android Registration – Individual Account', detailVi: 'Hỗ trợ đăng ký và cấu hình tài khoản Google Play Console cá nhân.', detailEn: 'Registration and configuration support for an individual Google Play Console account.', priceVi: '1.500.000đ – 2.700.000đ', priceEn: '$62 – $112' },
@@ -1470,6 +1533,8 @@ export default function Home() {
                     </tr>
                   ))}
 
+                </tbody>
+                <tbody className={`divide-y divide-[#d2d2d7]/30 text-[15px] ${activeServicePage === 'ads' ? 'animate-in fade-in slide-in-from-right-2 duration-300' : 'hidden'}`}>
                   {/* App Growth & Ads */}
                   {[
                     { vi: 'App Growth & Ads – Starter', en: 'App Growth & Ads – Starter', detailVi: 'Meta Ads hoặc TikTok Ads; thiết lập tài khoản và campaign App Install; nghiên cứu khách hàng, A/B test, tối ưu CPC/CTR/CPI; theo dõi hàng tuần, báo cáo tháng; tối đa 3 campaign. Ngân sách ads đề xuất từ 5.000.000đ/tháng.', detailEn: 'Meta Ads or TikTok Ads; App Install campaign setup, audience research, A/B testing, CPC/CTR/CPI optimization, weekly optimization, monthly reporting, and up to 3 active campaigns. Suggested ad spend from $208/month.', priceVi: '2.490.000đ/tháng', priceEn: '$104/month' },
@@ -1496,122 +1561,84 @@ export default function Home() {
       </section>
 
 
-      {/* About Me Section */}
-      <section id="about" className="py-24 bg-[#f5f5f7] border-t border-[#d2d2d7]/50">
+      {/* StorePublish Section */}
+      <section id="about" data-reveal className="py-24 bg-[#f5f5f7] border-t border-[#d2d2d7]/50 overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          <div data-reveal-item className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight bg-gradient-to-r from-[#022640] to-[#5786AB] bg-clip-text text-transparent inline-block pb-1 mb-4">
+              {lang === 'vi' ? 'Đồng hành cùng sản phẩm số' : 'Your digital product partner'}
+            </h2>
+            <p className="text-xl text-[#86868b] font-medium tracking-tight leading-relaxed">
+              {lang === 'vi'
+                ? 'StorePublish là đơn vị đồng hành cùng doanh nghiệp và đội ngũ sản phẩm trong hành trình xây dựng website, ứng dụng, hệ thống AI và phát hành sản phẩm số lên App Store, Google Play.'
+                : 'StorePublish partners with businesses and product teams to build websites, apps, AI systems, and publish digital products to the App Store and Google Play.'}
+            </p>
+          </div>
 
-            {/* Left - Identity */}
-            <div className="lg:col-span-4">
-              <div className="sticky top-[80px] text-center lg:text-left">
-                <h2 className="text-3xl font-semibold tracking-tight text-[#1d1d1f] mb-2">Lê Minh Quang</h2>
-                <p className="text-[15px] text-[#0071e3] font-medium mb-2">Software Engineer · FPT Information System</p>
-                <div className="bg-white p-4 rounded-[16px] mb-5 border border-[#d2d2d7]/50 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
-                  <p className="text-[14px] text-[#86868b] font-medium leading-relaxed">
-                    {lang === 'vi' 
-                      ? 'Đam mê khám phá công nghệ, thích xem phim, chơi game và thể thao' 
-                      : 'Passionate about exploring tech, watching movies, playing games, and sports'}
-                  </p>
-                </div>
-                <div className="w-full rounded-[20px] overflow-hidden shadow-lg mb-5">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/877E3A04-27CD-4908-8D40-BD43250F7B02_1_105_c.jpeg" alt="Lê Minh Quang" className="w-full h-auto" />
-                </div>
-                <p className="text-[14px] text-[#86868b] mb-4">{lang === 'vi' ? 'TP. Hồ Chí Minh, Việt Nam' : 'Ho Chi Minh City, Vietnam'}</p>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            <div data-reveal-item style={{ animationDelay: '100ms' }} className="tilt-card lg:col-span-7 relative min-h-[360px] md:min-h-[470px] rounded-[24px] overflow-hidden bg-white group shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+              <Image src="/storepublish-office.png" alt="StorePublish office exterior" fill sizes="(max-width: 1024px) 100vw, 58vw" className="object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#022640]/80 via-[#022640]/10 to-transparent" />
+              <div className="absolute left-7 right-7 bottom-7 md:left-9 md:right-9 md:bottom-9">
+                <p className="text-white/70 text-[11px] uppercase tracking-[0.2em] font-semibold mb-2">StorePublish</p>
+                <p className="text-white text-xl md:text-2xl font-semibold tracking-tight">{lang === 'vi' ? 'Không gian làm việc cho những sản phẩm số chỉn chu.' : 'A workspace for polished digital products.'}</p>
               </div>
             </div>
 
-            {/* Right - Experience & Skills */}
-            <div className="lg:col-span-8 space-y-10">
-
-              {/* Bio */}
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-[#0071e3] mb-3">{lang === 'vi' ? 'Giới thiệu' : 'About'}</p>
-                <p className="text-[17px] text-[#1d1d1f] leading-relaxed">
-                  {lang === 'vi'
-                    ? `Kỹ sư phần mềm với ${new Date().getFullYear() - 2023}+ năm kinh nghiệm làm freelance và công ty, cùng kinh nghiệm thực chiến tại FPT Information System — một trong những tập đoàn công nghệ hàng đầu Việt Nam. Ngoài công việc chính, mình vận hành thương hiệu StorePublish chuyên hỗ trợ đưa ứng dụng lên App Store và Google Play một cách chuyên nghiệp, nhanh chóng và uy tín.`
-                    : `Software Engineer with ${new Date().getFullYear() - 2023}+ years of freelance and corporate experience, including hands-on experience at FPT Information System — one of Vietnam's leading technology corporations. Beyond my main role, I run StorePublish, a specialized service helping developers and businesses publish their apps to the App Store and Google Play professionally and efficiently.`}
-                </p>
-              </div>
-
-              {/* Experience */}
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-[#0071e3] mb-6">{lang === 'vi' ? 'Kinh nghiệm làm việc' : 'Work Experience'}</p>
-                <div className="space-y-6">
-
-                  {/* FPTIS */}
-                  <div className="bg-white rounded-[20px] p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-[#d2d2d7]/30">
-                    <div className="flex items-start justify-between gap-4 mb-3">
-                      <div>
-                        <h3 className="text-[17px] font-semibold text-[#1d1d1f]">Software Engineer</h3>
-                        <p className="text-[14px] text-[#0071e3] font-medium">FPT Information System (FPTIS)</p>
-                      </div>
-                      <span className="text-[12px] text-[#86868b] bg-[#f5f5f7] px-3 py-1 rounded-full whitespace-nowrap shrink-0">2025 — {lang === 'vi' ? 'Hiện tại' : 'Present'}</span>
-                    </div>
-                    <p className="text-[14px] text-[#86868b] leading-relaxed">
-                      {lang === 'vi'
-                        ? 'Phát triển và duy trì hệ thống phần mềm doanh nghiệp tại FPTIS. Tham gia thiết kế kiến trúc, xây dựng API, tối ưu hiệu suất hệ thống và triển khai CI/CD cho các dự án quy mô lớn phục vụ hàng nghìn người dùng.'
-                        : 'Developing and maintaining enterprise software systems at FPTIS. Involved in architecture design, API development, system performance optimization, and CI/CD deployment for large-scale projects serving thousands of users.'}
-                    </p>
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      {['Enterprise Software', 'API Development', 'CI/CD', 'System Design'].map(tag => (
-                        <span key={tag} className="text-[12px] text-[#1d1d1f] bg-[#f5f5f7] px-3 py-1 rounded-full font-medium">{tag}</span>
-                      ))}
-                    </div>
-                  </div>
-
-
-
-                  {/* Gamenect */}
-                  <div className="bg-white rounded-[20px] p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-[#d2d2d7]/30">
-                    <div className="flex items-start justify-between gap-4 mb-3">
-                      <div>
-                        <h3 className="text-[17px] font-semibold text-[#1d1d1f]">{lang === 'vi' ? 'Người sáng lập' : 'Founder'}</h3>
-                        <a href="https://gamenect.space" target="_blank" rel="noopener noreferrer" className="text-[14px] text-[#0071e3] font-medium hover:underline">
-                          Gamenect · gamenect.space
-                        </a>
-                      </div>
-                      <span className="text-[12px] text-[#86868b] bg-[#f5f5f7] px-3 py-1 rounded-full whitespace-nowrap shrink-0">2025 — {lang === 'vi' ? 'Hiện tại' : 'Present'}</span>
-                    </div>
-                    <p className="text-[14px] text-[#86868b] leading-relaxed">
-                      {lang === 'vi'
-                        ? 'Sáng lập và phát triển Gamenect — nền tảng kết nối cộng đồng game thủ Việt Nam. Tự xây dựng toàn bộ hệ thống từ thiết kế UI/UX, phát triển backend đến vận hành và phát triển cộng đồng người dùng.'
-                        : 'Founded and built Gamenect — a platform connecting the Vietnamese gaming community. Independently developed the entire system from UI/UX design and backend engineering to operations and community growth.'}
-                    </p>
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      {['Flutter', 'Community Platform', 'Full-stack', 'UI/UX Design', 'Product Management'].map(tag => (
-                        <span key={tag} className="text-[12px] text-[#1d1d1f] bg-[#f5f5f7] px-3 py-1 rounded-full font-medium">{tag}</span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* AutoFarm */}
-                  <div className="bg-white rounded-[20px] p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-[#d2d2d7]/30">
-                    <div className="flex items-start justify-between gap-4 mb-3">
-                      <div>
-                        <h3 className="text-[17px] font-semibold text-[#1d1d1f]">AutoFarm</h3>
-                        <a href="https://www.autofarm.space/" target="_blank" rel="noopener noreferrer" className="text-[14px] text-[#0071e3] font-medium hover:underline">
-                          autofarm.space
-                        </a>
-                      </div>
-                      <span className="text-[12px] text-[#86868b] bg-[#f5f5f7] px-3 py-1 rounded-full whitespace-nowrap shrink-0">{lang === 'vi' ? 'Dự án cá nhân' : 'Personal project'}</span>
-                    </div>
-                    <p className="text-[14px] text-[#86868b] leading-relaxed">
-                      {lang === 'vi'
-                        ? 'AutoFarm là hệ thống tự động hoá social media, cho phép nuôi nick, tự động tương tác trên Threads, clone và đăng Facebook Reels từ Shopee Affiliate, vận hành 24/7 và báo cáo trực tiếp qua Telegram.'
-                        : 'AutoFarm is a social-media automation platform for account nurturing, automated Threads engagement, Shopee Affiliate-to-Facebook Reels cloning and publishing, 24/7 operation, and direct Telegram reporting.'}
-                    </p>
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      {['Threads Automation', 'Facebook Reels', 'Telegram Bot', 'Puppeteer', 'Full-stack'].map(tag => (
-                        <span key={tag} className="text-[12px] text-[#1d1d1f] bg-[#f5f5f7] px-3 py-1 rounded-full font-medium">{tag}</span>
-                      ))}
-                    </div>
-                  </div>
-
+            <div data-reveal-item style={{ animationDelay: '180ms' }} className="lg:col-span-5 grid grid-cols-2 gap-4">
+              {[
+                { src: '/storepublish-meeting-room.png', alt: 'StorePublish meeting room', title: lang === 'vi' ? 'Tư vấn & chiến lược' : 'Consulting & strategy', className: 'col-span-2 min-h-[220px]' },
+                { src: '/storepublish-workspace.png', alt: 'StorePublish workspace', title: lang === 'vi' ? 'Thiết kế & phát triển' : 'Design & development', className: 'min-h-[180px]' },
+                { src: '/storepublish-lounge.png', alt: 'StorePublish lounge', title: lang === 'vi' ? 'Kết nối & đồng hành' : 'Connect & collaborate', className: 'min-h-[180px]' },
+              ].map((image) => (
+                <div key={image.src} className={`${image.className} tilt-card relative rounded-[24px] overflow-hidden group bg-white shadow-[0_4px_24px_rgba(0,0,0,0.04)]`}>
+                  <Image src={image.src} alt={image.alt} fill sizes="(max-width: 1024px) 50vw, 24vw" className="object-cover transition-transform duration-700 ease-out group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/5 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
+                  <p className="absolute left-4 bottom-4 text-white text-[13px] font-semibold tracking-tight">{image.title}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+
+          <div data-reveal-item style={{ animationDelay: '240ms' }} className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+            {[
+              { vi: 'Sản phẩm số', en: 'Digital products', descVi: 'Website, mobile app và hệ thống vận hành theo nhu cầu thực tế.', descEn: 'Websites, mobile apps, and operations systems built for real needs.' },
+              { vi: 'AI & tự động hoá', en: 'AI & automation', descVi: 'Tư vấn và triển khai AI để tối ưu quy trình doanh nghiệp.', descEn: 'AI consulting and implementation to improve business workflows.' },
+              { vi: 'Phát hành Store', en: 'Store publishing', descVi: 'Chuẩn bị hồ sơ, xử lý quy trình và hỗ trợ phát hành ứng dụng.', descEn: 'Profile preparation, process support, and app publishing assistance.' },
+            ].map((item) => (
+              <div key={item.vi} className="bg-white rounded-[24px] p-8 flex flex-col justify-between shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-transform duration-300 hover:-translate-y-1">
+                <h3 className="text-[17px] font-semibold text-[#1d1d1f] mb-2">{lang === 'vi' ? item.vi : item.en}</h3>
+                <p className="text-[14px] text-[#86868b] leading-relaxed">{lang === 'vi' ? item.descVi : item.descEn}</p>
               </div>
+            ))}
+          </div>
 
+          <div data-reveal-item style={{ animationDelay: '300ms' }} className="tilt-card mt-8 bg-[#1d1d1f] rounded-[24px] p-8 text-white grid grid-cols-1 lg:grid-cols-2 gap-7 shadow-[0_4px_24px_rgba(0,0,0,0.08)] overflow-hidden">
+            <div className="flex flex-col justify-center md:px-2">
+              <p className="text-[13px] font-medium text-[#8abfe3] mb-2">{lang === 'vi' ? 'Dự án của StorePublish' : 'A StorePublish project'}</p>
+              <h3 className="text-3xl font-semibold tracking-tight mb-3">AutoFarm</h3>
+              <p className="text-[14px] text-white/75 leading-relaxed max-w-xl mb-6">
+                {lang === 'vi'
+                  ? 'Nền tảng tự động hoá social media cho nuôi nick, tương tác Threads, xử lý Facebook Reels và báo cáo trực tiếp qua Telegram.'
+                  : 'A social-media automation platform for account nurturing, Threads engagement, Facebook Reels workflows, and direct Telegram reporting.'}
+              </p>
+              <a href="https://www.autofarm.space/" target="_blank" rel="noopener noreferrer" className="w-fit inline-flex items-center justify-center px-5 py-3 rounded-full bg-white text-[#022640] text-[14px] font-semibold transition-transform duration-300 hover:scale-105">
+                {lang === 'vi' ? 'Mở AutoFarm' : 'Open AutoFarm'}
+              </a>
+            </div>
 
+            <div className="relative rounded-[18px] overflow-hidden bg-[#07131f] border border-white/15 shadow-2xl aspect-[16/10] group">
+              <iframe
+                src="https://www.autofarm.space/"
+                title="AutoFarm live preview"
+                loading="lazy"
+                referrerPolicy="strict-origin-when-cross-origin"
+                className="absolute inset-0 h-full w-full border-0 bg-white"
+              />
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-[#022640]/65 to-transparent" />
+              <a href="https://www.autofarm.space/" target="_blank" rel="noopener noreferrer" aria-label={lang === 'vi' ? 'Mở AutoFarm ở trang mới' : 'Open AutoFarm in a new tab'} title={lang === 'vi' ? 'Mở AutoFarm' : 'Open AutoFarm'} className="absolute right-4 top-4 text-white opacity-0 translate-y-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 hover:text-[#8abfe3]">
+                <SquareArrowOutUpRight className="w-5 h-5" aria-hidden="true" />
+              </a>
             </div>
           </div>
         </div>
@@ -1625,7 +1652,7 @@ export default function Home() {
               <h2 className="text-3xl font-semibold tracking-tight mb-4 bg-gradient-to-r from-[#022640] to-[#5786AB] bg-clip-text text-transparent inline-block">StorePublish</h2>
               <p className="text-[#86868b] max-w-sm text-[15px]">{lang === 'vi' ? 'Giải pháp trọn gói đưa ứng dụng lên App Store và Google Play.' : 'End-to-end solution for publishing apps to the App Store and Google Play.'}</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-5 sm:gap-8">
               <div>
                 <h3 
                   className="text-[15px] font-semibold bg-clip-text text-transparent mb-6 uppercase tracking-wider inline-block"
@@ -1645,27 +1672,24 @@ export default function Home() {
                       <img src="/zaloicon.jpg" alt="Zalo" className="w-5 h-5" /> Zalo (0387 412 607)
                     </a>
                   </li>
+                  <li>
+                    <a href="https://www.facebook.com/profile.php?id=61592576199560" target="_blank" rel="noopener noreferrer" className="hover:text-[#1d1d1f] text-[#86868b] transition-colors flex items-center gap-3">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src="/facebook-icon.png" alt="Facebook" className="-ml-1 -mr-1 h-7 w-7 rounded-full" /> {lang === 'vi' ? 'Fanpage StorePublish' : 'StorePublish Fanpage'}
+                    </a>
+                  </li>
                 </ul>
               </div>
               <div>
-                <h3 
-                  className="text-[15px] font-semibold bg-clip-text text-transparent mb-6 uppercase tracking-wider inline-block"
-                  style={{ backgroundImage: 'linear-gradient(90deg, #007AFF, #A855F7, #EC4899, #F97316)' }}
-                >
-                  {lang === 'vi' ? 'Địa Chỉ' : 'Address'}
-                </h3>
-                <a 
-                  href="https://maps.google.com/?q=Vinhomes+Grand+Park,+Ho+Chi+Minh+City"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[14px] text-[#86868b] hover:text-[#1d1d1f] transition-colors leading-relaxed flex items-start gap-3 cursor-pointer"
-                >
-                  <MapPin className="w-5 h-5 shrink-0" />
-                  <p>
-                    Vinhomes Grand Park<br />
-                    {lang === 'vi' ? 'Thành phố Hồ Chí Minh' : 'Ho Chi Minh City'}
-                  </p>
-                </a>
+                <div className="h-40 w-full overflow-hidden rounded-[16px] border border-[#d2d2d7]/50 bg-[#f5f5f7] shadow-[0_4px_16px_rgba(0,0,0,0.04)] sm:h-44">
+                  <iframe
+                    title="StorePublish location map"
+                    src="https://maps.google.com/maps?q=Vinhomes%20Grand%20Park%2C%20Ho%20Chi%20Minh%20City&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="h-full w-full border-0"
+                  />
+                </div>
               </div>
             </div>
           </div>
