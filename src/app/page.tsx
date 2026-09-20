@@ -341,8 +341,11 @@ export default function Home() {
     text += lang === 'vi' ? `- Đồng hành và giải trình xử lý phản hồi với Reviewer từ A-Z\n\n` : `- Accompany and explain feedback with Reviewer from A-Z\n\n`;
 
     text += lang === 'vi' 
-      ? `* Lưu ý: Giá trên chưa bao gồm phí khởi tạo tài khoản Apple/Google và các chỉnh sửa cấu trúc lớn trong code gốc của ứng dụng.\n\n`
-      : `* Note: The above price does not include Apple/Google account registration fees and major structural changes in the app's source code.\n\n`;
+      ? `* Lưu ý: Giá trên chưa bao gồm phí khởi tạo tài khoản Apple/Google và các chỉnh sửa cấu trúc lớn trong code gốc của ứng dụng.\n`
+      : `* Note: The above price does not include Apple/Google account registration fees and major structural changes in the app's source code.\n`;
+    text += lang === 'vi'
+      ? `* Chính sách tài khoản & cọc: Tiền cọc không hoàn lại nếu lỗi phát sinh từ tài khoản Dev phía khách hàng (vi phạm chính sách/bị khóa); StorePublish hỗ trợ submit lại trên tài khoản khác.\n\n`
+      : `* Account & Deposit policy: Deposits are non-refundable if issues arise from the client's Developer account (policy violations/suspension); we support re-submitting on another account.\n\n`;
 
     text += lang === 'vi' ? `[6] THÔNG TIN THANH TOÁN & LIÊN HỆ\n` : `[6] PAYMENT & CONTACT INFO\n`;
     text += lang === 'vi' ? `- Người phụ trách: Lê Minh Quang\n` : `- Contact Person: Le Minh Quang\n`;
@@ -1347,6 +1350,10 @@ export default function Home() {
                     <p>
                       <span className="text-[11px] font-semibold uppercase tracking-widest text-[#f59e0b] mr-2">{lang === 'vi' ? 'Duyệt ứng dụng:' : 'App Approval:'}</span>
                       <span>{lang === 'vi' ? 'Quá trình xét duyệt ứng dụng phụ thuộc 100% vào chính sách xét duyệt của Google Play và App Store.' : 'The app review process depends 100% on the review policies of Google Play and the App Store.'}</span>
+                    </p>
+                    <p>
+                      <span className="text-[11px] font-semibold uppercase tracking-widest text-[#f59e0b] mr-2">{lang === 'vi' ? 'Tài khoản Dev & Tiền cọc:' : 'Dev Account & Deposit:'}</span>
+                      <span>{lang === 'vi' ? 'Khi đăng app, nếu phát sinh lỗi thuộc về tài khoản Developer do khách hàng cung cấp (tài khoản vi phạm chính sách, bị khoá/treo hoặc các lỗi từ phía tài khoản đó), bên mình sẽ không hoàn lại tiền cọc. StorePublish sẽ hỗ trợ nộp lại (re-submit) ứng dụng trên một tài khoản Developer khác do khách hàng cung cấp; trường hợp khách hàng muốn dừng dịch vụ thì tiền cọc sẽ không được hoàn trả.' : 'During app submission, if an error or rejection is caused by the client\'s provided Developer account (such as account policy violations, account suspension, or issues on that account), the deposit will not be refunded. StorePublish will support re-submitting the app on another Developer account provided by the client; if the client decides to discontinue the service, the deposit is non-refundable.'}</span>
                     </p>
                     <p>
                       <span className="text-[11px] font-semibold uppercase tracking-widest text-[#f59e0b] mr-2">{lang === 'vi' ? 'Cam kết từ mình:' : 'My Guarantee:'}</span>
